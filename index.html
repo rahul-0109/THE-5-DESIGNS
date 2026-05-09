@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Studio | Company Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #F5F5F0;
+            --color-obsidian: #1A1A1A;
+            --color-accent: #C5A059;
+            --color-text: #1A1A1A;
+            --color-text-muted: rgba(26, 26, 26, 0.6);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+            --ease-premium: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* --- SLIDE STRUCTURE --- */
+        section {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 5% 10%;
+            overflow: hidden;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        @media print {
+            html, body {
+                scroll-snap-type: none;
+            }
+            section {
+                width: 297mm;
+                height: 210mm;
+                padding: 20mm;
+                page-break-after: always;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            opacity: 0.3;
+        }
+
+        .studio-tag {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            opacity: 0.5;
+        }
+
+        /* --- OMBRE EFFECT --- */
+        .ombre-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.4) 0%, rgba(26, 26, 26, 0) 50%, rgba(26, 26, 26, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .ombre-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+            z-index: 2;
+        }
+
+        /* --- SLIDE 1: TITLE --- */
+        #slide-1 {
+            background: #1A1A1A;
+            color: #F5F5F0;
+        }
+        #slide-1 .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            z-index: 1;
+        }
+        #slide-1 .content-wrap {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+        #slide-1 h1 {
+            font-size: 8rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: #F5F5F0;
+        }
+        #slide-1 p {
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+        }
+
+        /* --- SLIDE 2: THE STUDIO --- */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            width: 100%;
+        }
+        .text-content h2 {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-muted);
+        }
+        .image-box {
+            width: 100%;
+            height: 60vh;
+            background: #e0e0d5;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        /* --- SLIDE 4: SERVICES --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            width: 100%;
+            margin-top: 4rem;
+        }
+        .service-item {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+        .service-item h4 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .service-item p {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- SLIDE 5-8: PROJECTS --- */
+        .full-bleed-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        .project-meta {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: #F5F5F0;
+        }
+        .project-meta h3 {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: #F5F5F0;
+        }
+
+        /* --- SLIDE 9: FOUNDER & EXPERIENCE --- */
+        .founder-layout {
+            display: flex;
+            gap: 6rem;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .founder-text {
+            flex: 1.5;
+        }
+        .experience-list {
+            flex: 1;
+            margin-top: 2rem;
+        }
+        .exp-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .exp-year {
+            font-size: 0.7rem;
+            color: var(--color-accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+        }
+        .exp-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-style: italic;
+        }
+
+        /* --- SLIDE 10: WHAT MAKES US SPECIAL --- */
+        .special-box {
+            text-align: center;
+            max-width: 800px;
+        }
+        .special-box h2 {
+            font-size: 5rem;
+            margin-bottom: 3rem;
+        }
+        .accent-bar {
+            width: 100px;
+            height: 1px;
+            background: var(--color-accent);
+            margin: 2rem auto;
+        }
+
+        /* --- ANIMATIONS --- */
+        section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s var(--ease-premium);
+        }
+        section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media print {
+            body { background: white; }
+            section { opacity: 1 !important; transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="slide-1">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-image" alt="Hero">
+        <div class="ombre-overlay"></div>
+        <div class="content-wrap">
+            <p>Design Studio | Portfolio</p>
+            <h1>The Obsidian</h1>
+            <div class="accent-bar"></div>
+            <div class="studio-tag">Est. MMXXIV</div>
+        </div>
+        <div class="slide-number">01</div>
+    </section>
+
+    <section id="slide-2">
+        <div class="content-layout">
+            <div class="text-content">
+                <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">THE STUDIO</p>
+                <h2>Aesthetic <br>Excellence</h2>
+                <p>Rooted in the minimalist principles of high-end architectural design, our studio focuses on creating spaces that are both silent and profound. Every line and texture is a deliberate choice in the pursuit of perfection.</p>
+            </div>
+            <div class="image-box">
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000" alt="Studio View">
+            </div>
+        </div>
+        <div class="slide-number">02</div>
+    </section>
+
+    <section id="slide-3">
+        <div style="text-align: center; max-width: 900px;">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 2rem;">PHILOSOPHY</p>
+            <h2 style="font-size: 5rem; line-height: 1.2;">"Design is the silent language of luxury."</h2>
+            <div class="accent-bar" style="margin-top: 3rem;"></div>
+            <p style="font-size: 1.2rem; color: var(--color-text-muted); font-style: italic; margin-top: 2rem;">Inspired by the raw textures of obsidian and the warmth of natural light.</p>
+        </div>
+        <div class="slide-number">03</div>
+    </section>
+
+    <section id="slide-4">
+        <div style="width: 100%;">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">OUR DISCIPLINE</p>
+            <h2 style="font-size: 4rem;">Core Services</h2>
+            <div class="services-grid">
+                <div class="service-item">
+                    <h4>Architecture</h4>
+                    <p>Conceptualizing structural forms that harmonize with their natural environment.</p>
+                </div>
+                <div class="service-item">
+                    <h4>Interior Design</h4>
+                    <p>Crafting immersive interiors that prioritize spatial flow and sensory experience.</p>
+                </div>
+                <div class="service-item">
+                    <h4>Curation</h4>
+                    <p>A rigorous selection of rare materials and objects to anchor the studio's vision.</p>
+                </div>
+                <div class="service-item">
+                    <h4>Sourcing</h4>
+                    <p>Direct collaboration with world-class artisans to create bespoke artifacts.</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">04</div>
+    </section>
+
+    <section id="slide-5">
+        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000" class="full-bleed-image" alt="Project 1">
+        <div class="ombre-vignette"></div>
+        <div class="project-meta">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em;">CASE STUDY I</p>
+            <h3>Monolith Villa</h3>
+            <p style="letter-spacing: 0.2em; opacity: 0.6;">Sardinia • 2024</p>
+        </div>
+        <div class="slide-number">05</div>
+    </section>
+
+    <section id="slide-6">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="full-bleed-image" alt="Project 2">
+        <div class="ombre-vignette"></div>
+        <div class="project-meta">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em;">CASE STUDY II</p>
+            <h3>The Obsidian Suite</h3>
+            <p style="letter-spacing: 0.2em; opacity: 0.6;">Berlin • 2023</p>
+        </div>
+        <div class="slide-number">06</div>
+    </section>
+
+    <section id="slide-7">
+        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=2000" class="full-bleed-image" alt="Project 3">
+        <div class="ombre-vignette"></div>
+        <div class="project-meta">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em;">CASE STUDY III</p>
+            <h3>Arcane Loft</h3>
+            <p style="letter-spacing: 0.2em; opacity: 0.6;">Tokyo • 2024</p>
+        </div>
+        <div class="slide-number">07</div>
+    </section>
+
+    <section id="slide-8">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000" class="full-bleed-image" alt="Project 4">
+        <div class="ombre-vignette"></div>
+        <div class="project-meta">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em;">CASE STUDY IV</p>
+            <h3>Silent Residence</h3>
+            <p style="letter-spacing: 0.2em; opacity: 0.6;">Oslo • 2022</p>
+        </div>
+        <div class="slide-number">08</div>
+    </section>
+
+    <section id="slide-9">
+        <div class="founder-layout">
+            <div class="founder-text">
+                <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">LEADERSHIP & LEGACY</p>
+                <h2 style="font-size: 4rem; margin-bottom: 2rem;">The Founder's <br>Vision</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-muted);">With a decades-long commitment to the evolution of luxury architecture, our founder combines deep technical expertise with an avant-garde artistic sensibility. Our experience spans continents and cultures, unified by a singular dedication to design integrity.</p>
+            </div>
+            <div class="experience-list">
+                <div class="exp-item">
+                    <p class="exp-year">2005 - 2013</p>
+                    <p class="exp-title">Global Architectural Lead, Tokyo</p>
+                </div>
+                <div class="exp-item">
+                    <p class="exp-year">2013 - 2021</p>
+                    <p class="exp-title">Principal Curator, London</p>
+                </div>
+                <div class="exp-item">
+                    <p class="exp-year">2021 - PRESENT</p>
+                    <p class="exp-title">Creative Director, Obsidian Studio</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">09</div>
+    </section>
+
+    <section id="slide-10">
+        <div class="special-box">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">WHAT SETS US APART?</p>
+            <h2>The Extraordinary Difference</h2>
+            <div class="accent-bar"></div>
+            <p style="font-size: 1.2rem; color: var(--color-text-muted); line-height: 1.8;">Our studio operates on the edge of innovation and heritage. By bypassing traditional hierarchies and working directly with master artisans, we deliver a level of customization and material purity that defines a new era of curated living.</p>
+        </div>
+        <div class="slide-number">10</div>
+    </section>
+
+    <section id="slide-11">
+        <div style="text-align: center;">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 2rem;">INQUIRE</p>
+            <h2 style="font-size: 5rem; margin-bottom: 2rem;">Connect with the <br> <span style="font-style: italic; color: var(--color-accent);">Extraordinary</span></h2>
+            <div style="margin-top: 4rem; display: flex; flex-direction: column; gap: 1rem; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.8rem;">
+                <p>studio@obsidian.design</p>
+                <p>London • Tokyo • Sardinia</p>
+            </div>
+        </div>
+        <div class="slide-number">11</div>
+    </section>
+
+    <script>
+        // Use IntersectionObserver for reveal animations
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    // For a document/portfolio feel, we keep the slide active once revealed
+                    // entry.target.classList.remove('active'); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

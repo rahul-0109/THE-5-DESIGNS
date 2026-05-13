@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --color-bg: #F5F5F0;
@@ -72,15 +73,6 @@
             font-weight: 300;
             letter-spacing: -0.01em;
             line-height: 1.1;
-        }
-
-        .slide-number {
-            position: absolute;
-            bottom: 40px;
-            right: 60px;
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            opacity: 0.3;
         }
 
         .studio-tag {
@@ -352,6 +344,76 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #F5F5F0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5% 10%;
+        }
+
+        .preloader-visible-five {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.2rem;
+            color: #C5A059;
+            font-style: italic;
+            opacity: 0;
+            animation: singleReveal 2.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes singleReveal {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.9); }
+            40% { opacity: 1; filter: blur(0); transform: scale(1); }
+            100% { opacity: 1; filter: blur(0); transform: scale(1); }
+        }
+
+        /* Luxury Cursor */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #C5A059;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 99999;
+            pointer-events: none;
+            mix-blend-mode: difference; /* Inversion effect */
+        }
+        .cursor-halo {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 99998;
+            pointer-events: none;
+            transition: width 0.4s, height 0.4s, background 0.4s, border-color 0.4s;
+            backdrop-filter: blur(2px); /* Lens blur effect */
+        }
+        .cursor-particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: #C5A059;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99997;
+            opacity: 0.5;
+        }
+        body:hover .cursor-dot, body:hover .cursor-halo { opacity: 1; }
+        .cursor-active .cursor-halo {
+            width: 60px;
+            height: 60px;
+            background: rgba(197, 160, 89, 0.05);
+            border-color: rgba(197, 160, 89, 0.8);
+        }
+        
         .nav-logo {
             font-family: 'Playfair Display', serif;
             font-size: 2.8rem;
@@ -549,19 +611,33 @@
 </head>
 <body>
     <div id="preloader">
-        <div class="content-wrap" style="text-align: center;">
+        <div class="content-wrap" style="transform: translateY(-20px); text-align: center;">
             <p style="visibility: hidden; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; margin-bottom: 1rem;">Design Studio</p>
-            <h1 class="preloader-h1">
-                <span class="preloader-hidden-text">The </span>
+            <h1 style="white-space: nowrap; font-size: 8rem; font-style: italic; color: #C5A059; opacity: 1;">
+                <span style="visibility: hidden;">The </span>
                 <span class="preloader-visible-five">5</span>
-                <span class="preloader-hidden-text"> Designs</span>
+                <span style="visibility: hidden;"> Designs</span>
             </h1>
-            <div class="accent-bar" style="visibility: hidden;"></div>
+            <div style="opacity: 0; height: 1px; width: 100%; margin: 2rem auto;"></div>
         </div>
     </div>
     
-    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-halo"></div>
     
+    <!-- Failsafe: Remove preloader if JS fails or takes too long -->
+    <script>
+        setTimeout(function() {
+            var loader = document.getElementById('preloader');
+            if (loader && loader.style.opacity !== '0') {
+                console.warn("Failsafe: Force-removing preloader");
+                loader.style.opacity = '0';
+                loader.style.pointerEvents = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }, 4000);
+    </script>
+
     <nav class="on-dark">
         <a href="#slide-1" class="nav-logo">5</a>
         
@@ -572,9 +648,10 @@
         </div>
         
         <div class="nav-socials">
-            <a href="#" aria-label="Youtube"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 4-8 4z"/></svg></a>
-            <a href="#" aria-label="Instagram"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
-            <a href="#" aria-label="Pinterest"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.199-2.403.041-3.437.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.032-1.002 2.324-1.492 3.121 1.125.347 2.314.535 3.548.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg></a>
+            <a href="#" id="instagram_url" aria-label="Instagram"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+            <a href="#" id="youtube_url" aria-label="Youtube"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 4-8 4z"/></svg></a>
+            <a href="#" id="pinterest_url" aria-label="Pinterest"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.199-2.403.041-3.437.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.032-1.002 2.324-1.492 3.121 1.125.347 2.314.535 3.548.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg></a>
+            <a href="#" id="linkedin_url" aria-label="LinkedIn"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg></a>
         </div>
     </nav>
     
@@ -583,25 +660,24 @@
     </a>
 
     <section id="slide-1">
-        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-image" alt="Hero">
+        <img id="hero_image" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-image" alt="Hero">
         <div class="ombre-overlay"></div>
-        <div class="content-wrap">
-            <p class="intro-reveal" style="opacity: 0; transform: translateY(20px); letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; color: var(--color-accent); margin-bottom: 1rem;">Design Studio</p>
-            <h1 class="intro-reveal" style="opacity: 0; transform: translateY(20px); white-space: nowrap;">The <span class="animated-five" style="font-style: italic;">5</span> Designs</h1>
-            <div class="accent-bar intro-reveal" style="opacity: 0; transform: scaleX(0);"></div>
-            <div class="studio-tag intro-reveal" style="opacity: 0;">EST. MMXIX</div>
+        <div class="content-wrap" style="transform: translateY(-20px);">
+            <p id="hero_studio_text" class="intro-reveal" style="opacity: 0; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; color: var(--color-accent); margin-bottom: 1rem;">Design Studio</p>
+            <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic;">The <span style="font-family: 'Playfair Display', serif; font-size: 1.4em; color: #C5A059;">5</span> Designs</h1>
+            <div class="accent-bar" style="opacity: 0; height: 1px; width: 100%; background: var(--color-accent); transform: scaleX(0); margin: 2rem auto;"></div>
+            <div id="hero_est_text" class="studio-tag" style="opacity: 0; font-size: 0.7rem; letter-spacing: 0.4em;">EST. MMXIX</div>
         </div>
-        <div class="slide-number">01</div>
     </section>
 
     <section id="slide-2" style="align-items: flex-start; justify-content: center; padding: 12% 10% 8% 10%;">
         <div style="width: 100%; margin-bottom: 3rem;">
-            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">THE STUDIO</p>
-            <h2 style="font-size: 5rem;">ESSENCE OF <span class="hero-font"><span class="hero-five">5</span></span></h2>
+            <p id="slide2_subtitle" style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">THE STUDIO</p>
+            <h2 id="slide2_main_title" style="font-size: 5rem;">ESSENCE OF <span class="hero-font"><span class="hero-five">5</span></span></h2>
         </div>
         <div class="content-layout" style="display: flex; gap: 6rem; align-items: flex-start; width: 100%;">
             <div class="text-content" style="flex: 1.5;">
-                <div style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 1rem;">
+                <div id="slide2_content" style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 1rem;">
                     <p>At <span class="hero-font">The <span class="hero-five">5</span> Designs</span>, <span class="hero-font"><span class="hero-five">5</span></span> reigns supreme. It commands the <span class="hero-font"><span class="hero-five">5</span></span> eternal principles of mastery, the <span class="hero-font"><span class="hero-five">5</span></span> primal elements of nature, and the <span class="hero-font"><span class="hero-five">5</span></span> senses through which a king perceives his domain.</p>
                     <p>We accept <span class="hero-font">only <span class="hero-five">5</span></span> projects at any time. This unbreakable limit grants your vision total dominion over our undivided mastery and attention.</p>
                     <p>You are not a client - you are one of the chosen. Step into the inner circle where concierge service is your right and every detail is perfected without compromise.</p>
@@ -610,20 +686,18 @@
                 </div>
             </div>
             <div class="image-box" style="flex: 1; height: 60vh;">
-                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000" alt="Studio View">
+                <img id="essence_image" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000" alt="Studio View">
             </div>
         </div>
-        <div class="slide-number">02</div>
     </section>
 
     <section id="slide-3">
         <div style="text-align: center; max-width: 900px;">
             <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 2rem;">PHILOSOPHY</p>
-            <h2 style="font-size: 5rem; line-height: 1.2;">"Design is the silent language of luxury."</h2>
+            <h2 id="philosophy_quote" style="font-size: 5rem; line-height: 1.2;">"Design is the silent language of luxury."</h2>
             <div class="accent-bar" style="margin-top: 3rem;"></div>
-            <p style="font-size: 1.2rem; color: var(--color-text-muted); font-style: italic; margin-top: 2rem;">Inspired by the raw textures of obsidian and the warmth of natural light.</p>
+            <p id="philosophy_subtitle" style="font-size: 1.2rem; color: var(--color-text-muted); font-style: italic; margin-top: 2rem;">We deliver to you, a home crafted with Integrity, Mastery & Genuine Care</p>
         </div>
-        <div class="slide-number">03</div>
     </section>
 
     <section id="slide-4">
@@ -649,7 +723,6 @@
                 </div>
             </div>
         </div>
-        <div class="slide-number">04</div>
     </section>
 
     <section id="slide-5">
@@ -659,28 +732,26 @@
             <p style="color: var(--color-accent); letter-spacing: 0.4em;">FEATURED PROJECT</p>
             <h3>The Obsidian Suite</h3>
         </div>
-        <div class="slide-number">05</div>
     </section>
 
     <section id="slide-6" style="align-items: flex-start; justify-content: center; padding: 12% 10% 8% 10%;">
         <div style="width: 100%; margin-bottom: 3rem;">
             <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">LEADERSHIP & LEGACY</p>
-            <h2 style="font-size: 4rem;">The Founder's Vision</h2>
+            <h2 id="founder_title" style="font-size: 4rem;">The Founder's Vision</h2>
         </div>
         <div class="founder-layout" style="align-items: flex-start; width: 100%;">
             <div class="founder-text" style="flex: 1.5;">
                 <div style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 1rem;">
-                    <p>After over a decade in the luxury design industry, I grew tired of seeing clients pay premium prices for ordinary homes, hidden markups, mismanaged funds, and endless delays.</p>
-                    <p>So I created <span class="hero-font">The <span class="hero-five">5</span> Designs</span> - A studio built on a simple belief: <span class="hero-font">true luxury lies in the experience</span></p>
-                    <p>By working with only <span class="hero-font"><span class="hero-five">5</span></span> projects at a time, I give each client my complete focus. We partner directly with the world's finest brands and artisans, cut unnecessary costs, and deliver homes that are truly exclusive. Our proprietary AI keeps you fully informed with real-time transparency on your personal dashboard.</p>
-                    <p><span class="hero-font">This is my promise to you - A Home Crafted with integrity, mastery and genuine care</span></p>
+                    <p id="founder_p1"><span class="hero-font">The <span class="hero-five">5</span> Designs</span> - A studio built on a simple belief: <span class="hero-font">true luxury lies in the experience.</span></p>
+                    <p id="founder_p2">After over a decade in the luxury design industry, I grew tired of seeing clients pay premium prices for ordinary homes, hidden markups, mismanaged funds, and endless delays.</p>
+                    <p id="founder_p3">By working with only <span class="hero-font"><span class="hero-five">5</span></span> projects at a time, I give each client my complete focus. We partner directly with the world's finest brands and artisans, cut unnecessary costs, and deliver homes that are truly exclusive.</p>
+                    <p id="founder_p4"><span class="hero-font">This is my promise to you - A Home Crafted with integrity, mastery and genuine care</span></p>
                 </div>
             </div>
             <div class="image-box" style="flex: 1; height: 60vh;">
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1000" alt="Founder Portrait">
+                <img id="founder_image" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1000" alt="Founder Portrait">
             </div>
         </div>
-        <div class="slide-number">06</div>
     </section>
 
     <section id="slide-7">
@@ -690,10 +761,24 @@
             <div class="accent-bar"></div>
             <p style="font-size: 1.2rem; color: var(--color-text-muted); line-height: 1.8;">Our studio operates on the edge of innovation and heritage. By bypassing traditional hierarchies and working directly with master artisans, we deliver a level of customization and material purity that defines a new era of curated living.</p>
         </div>
-        <div class="slide-number">07</div>
     </section>
 
-    <section id="slide-8">
+    <!-- NEW SLIDE 8: THE DIARIES -->
+    <section id="slide-8" style="padding: 10% 0 10% 10%; align-items: flex-start;">
+        <div style="margin-bottom: 4rem;">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">THE JOURNEY</p>
+            <h2 style="font-size: 4rem;">Obsidian Diaries</h2>
+        </div>
+        
+        <div id="diaries-container" style="display: flex; gap: 3rem; overflow-x: auto; padding-right: 10%; width: 100%; scrollbar-width: none; -ms-overflow-style: none;">
+            <!-- Dynamic Content Here -->
+            <div class="diary-placeholder" style="min-width: 400px; height: 500px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; font-style: italic; color: #aaa;">
+                Loading recent entries...
+            </div>
+        </div>
+    </section>
+
+    <section id="slide-9">
         <div class="inquiry-layout" style="display: flex; gap: 6rem; align-items: center; width: 100%; position: relative; z-index: 10;">
             <div class="inquiry-text" style="flex: 1; text-align: left;">
                 <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 2rem;">INQUIRE</p>
@@ -711,20 +796,21 @@
             </div>
             
             <div class="inquiry-form" style="flex: 1;">
-                <form style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <form id="leadForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
                     <div class="form-group">
-                        <input type="text" placeholder="NAME (REQUIRED)" required style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
+                        <input type="text" id="leadName" placeholder="NAME (REQUIRED)" required style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
                     </div>
                     <div class="form-group">
-                        <input type="tel" placeholder="PHONE NUMBER (REQUIRED)" required style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
+                        <input type="tel" id="leadPhone" placeholder="PHONE NUMBER (REQUIRED)" required style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="EMAIL ID (OPTIONAL)" style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
+                        <input type="email" id="leadEmail" placeholder="EMAIL ID (OPTIONAL)" style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
                     </div>
                     <div class="form-group">
-                        <input type="text" placeholder="CITY (OPTIONAL)" style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
+                        <input type="text" id="leadCity" placeholder="CITY (OPTIONAL)" style="width: 100%; padding: 1rem 0; background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); letter-spacing: 0.1em; outline: none; color: var(--color-text);">
                     </div>
                     <button type="submit" class="submit-btn" style="margin-top: 1rem; padding: 1.2rem 2.5rem; background: var(--color-obsidian); color: #F5F5F0; border: none; cursor: pointer; font-family: var(--font-body); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.7rem; width: fit-content; transition: opacity 0.3s;">Submit Inquiry</button>
+                    <p id="formStatus" class="text-xs mt-2 italic opacity-0 transition-opacity"></p>
                 </form>
             </div>
         </div>
@@ -741,176 +827,272 @@
             <a href="#" aria-label="Whatsapp"><svg class="social-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.407 3.481s3.48 5.223 3.48 8.409c-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.666zm6.29-4.143c1.589.943 3.133 1.441 4.703 1.442 5.342 0 9.69-4.348 9.692-9.689.001-2.588-1.007-5.023-2.841-6.857s-4.269-2.841-6.858-2.841c-5.345 0-9.694 4.349-9.696 9.691-.001 1.711.457 3.384 1.326 4.877l-1.015 3.705 3.792-1.001zm11.246-6.825c-.301-.15-1.779-.879-2.053-.979-.275-.1-.475-.15-.675.15s-.776.979-.951 1.176-.35.225-.65.075c-.301-.15-1.267-.467-2.414-1.491-.892-.796-1.493-1.78-1.669-2.079-.175-.3-.019-.463.13-.612.135-.133.301-.35.45-.525.15-.175.2-.3.3-.5s.05-.375-.025-.525-.675-1.625-.925-2.225c-.244-.589-.491-.51-.675-.519-.174-.009-.374-.01-.574-.01s-.525.075-.8.375c-.275.3-.1.525-1.1.525s-1.2.975-1.2 2.375c0 1.4 1.025 2.75 1.175 2.95s2.016 3.08 4.885 4.315c.682.294 1.214.469 1.629.601.684.216 1.306.186 1.799.112.548-.081 1.779-.726 2.029-1.426s.25-.13.175-.375z"/></svg></a>
         </div>
         
-        <div class="slide-number">08</div>
     </section>
 
     <script>
-        // Initialize Lenis Smooth Scroll
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            orientation: 'vertical',
-            gestureOrientation: 'vertical',
-            smoothWheel: true,
-            wheelMultiplier: 1,
-            smoothTouch: false,
-            touchMultiplier: 2,
-            infinite: false,
-        });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
+        // FORCED HERO RESET (Reset to Slide 1 on Refresh)
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
         }
-        requestAnimationFrame(raf);
+        window.scrollTo(0, 0);
+        if (window.location.hash) {
+            history.replaceState(null, null, ' ');
+        }
 
-        // Custom Cursor Logic
-        const cursor = document.querySelector('.cursor');
-        const follower = document.querySelector('.cursor-follower');
-        
-        let mouseX = 0;
-        let mouseY = 0;
-        
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            gsap.to(cursor, {
-                x: mouseX - 4,
-                y: mouseY - 4,
-                duration: 0.1
-            });
-            
-            gsap.to(follower, {
-                x: mouseX - 22,
-                y: mouseY - 22,
-                duration: 0.8,
-                ease: "power3.out"
-            });
-        });
+        // CORE INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                // Initialize Supabase Client
+                const SB_URL = localStorage.getItem('sb_url');
+                const SB_KEY = localStorage.getItem('sb_key');
+                let supabase = null;
+                if (SB_URL && SB_KEY && window.supabase) {
+                    supabase = window.supabase.createClient(SB_URL, SB_KEY);
+                    fetchSiteConfig(supabase);
+                }
 
-        // Hover effects for cursor
-        document.querySelectorAll('a, button, input').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                gsap.to(follower, {
-                    scale: 1.8,
-                    backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                    borderColor: 'var(--color-accent)',
-                    borderWidth: '0px',
-                    duration: 0.4,
-                    ease: "power4.out"
+                // Initialize Lenis Smooth Scroll
+                const lenis = new Lenis({
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    smoothWheel: true
                 });
-                gsap.to(cursor, {
-                    scale: 3,
-                    opacity: 0.3,
-                    duration: 0.4
-                });
-            });
-            el.addEventListener('mouseleave', () => {
-                gsap.to(follower, {
-                    scale: 1,
-                    backgroundColor: 'rgba(197, 160, 89, 0.02)',
-                    borderColor: 'var(--color-accent)',
-                    borderWidth: '1px',
-                    duration: 0.4,
-                    ease: "power4.out"
-                });
-                gsap.to(cursor, {
-                    scale: 1,
-                    opacity: 1,
-                    duration: 0.4
-                });
-            });
-        });
+                function raf(time) {
+                    lenis.raf(time);
+                    requestAnimationFrame(raf);
+                }
+                requestAnimationFrame(raf);
 
-        // GSAP Scroll Animations
-        gsap.registerPlugin(ScrollTrigger);
+                // GSAP Registration
+                gsap.registerPlugin(ScrollTrigger);
 
-        // Navigation Color & State Toggle
-        const nav = document.querySelector('nav');
-        ScrollTrigger.create({
-            trigger: "#slide-1",
-            start: "top top",
-            end: "bottom top",
-            onEnter: () => nav.classList.add('on-dark'),
-            onEnterBack: () => nav.classList.add('on-dark'),
-            onLeave: () => {
-                nav.classList.remove('on-dark');
-                nav.classList.add('scrolled');
-            },
-            onLeaveBack: () => {
-                nav.classList.add('on-dark');
-                nav.classList.remove('scrolled');
-            },
-        });
-        
-        // Initial state for nav on dark hero
-        nav.classList.add('on-dark');
+                // 1. LUXURY CURSOR ENGINE
+                const dot = document.querySelector('.cursor-dot');
+                const halo = document.querySelector('.cursor-halo');
+                let mouseX = 0, mouseY = 0, dotX = 0, dotY = 0, haloX = 0, haloY = 0;
+                let isMagnetic = false;
 
-        // Section Fade & Reveal
-        document.querySelectorAll('section').forEach((section, index) => {
-            const elements = section.querySelectorAll('h2, .reveal-content, .service-item, .image-box, .inquiry-form');
-            
-            gsap.to(elements, {
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top 75%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 0,
-                opacity: 1,
-                duration: 1.5,
-                stagger: 0.15,
-                ease: "expo.out"
-            });
-            
-            // Image Parallax
-            const img = section.querySelector('img.full-bleed-image, .image-box img');
-            if (img) {
-                gsap.to(img, {
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: 0.5
-                    },
-                    y: -40,
-                    ease: "none"
+                document.addEventListener('mousemove', (e) => {
+                    if (!isMagnetic) {
+                        mouseX = e.clientX;
+                        mouseY = e.clientY;
+                    }
                 });
+
+                function animateCursor() {
+                    dotX += (mouseX - dotX) * 0.25;
+                    dotY += (mouseY - dotY) * 0.25;
+                    haloX += (mouseX - haloX) * 0.12;
+                    haloY += (mouseY - haloY) * 0.12;
+                    dot.style.transform = `translate(${dotX - 3}px, ${dotY - 3}px)`;
+                    halo.style.transform = `translate(${haloX - 20}px, ${haloY - 20}px)`;
+                    
+                    // Golden Dust Trail
+                    if (Math.abs(mouseX - haloX) > 10) {
+                        createParticle(dotX, dotY);
+                    }
+                    
+                    requestAnimationFrame(animateCursor);
+                }
+                animateCursor();
+
+                function createParticle(x, y) {
+                    const p = document.createElement('div');
+                    p.className = 'cursor-particle';
+                    p.style.left = x + 'px';
+                    p.style.top = y + 'px';
+                    document.body.appendChild(p);
+                    gsap.to(p, {
+                        x: (Math.random() - 0.5) * 40,
+                        y: (Math.random() - 0.5) * 40,
+                        opacity: 0,
+                        scale: 0,
+                        duration: 1,
+                        onComplete: () => p.remove()
+                    });
+                }
+
+                // Click Pulse
+                document.addEventListener('mousedown', () => {
+                    gsap.to(halo, { scale: 0.7, duration: 0.2, ease: "power2.in" });
+                    gsap.to(dot, { scale: 1.5, duration: 0.2 });
+                });
+                document.addEventListener('mouseup', () => {
+                    gsap.to(halo, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+                    gsap.to(dot, { scale: 1, duration: 0.5 });
+                });
+
+                // Magnetic Attractor
+                document.querySelectorAll('a, button, .nav-link').forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        document.body.classList.add('cursor-active');
+                        isMagnetic = true;
+                    });
+                    el.addEventListener('mousemove', (e) => {
+                        const rect = el.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        mouseX = centerX + (e.clientX - centerX) * 0.35;
+                        mouseY = centerY + (e.clientY - centerY) * 0.35;
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        document.body.classList.remove('cursor-active');
+                        isMagnetic = false;
+                    });
+                });
+
+                // 2. CINEMATIC PRELOADER & INTRO (Hard 3s)
+                setTimeout(() => {
+                    // Start reveal sequence at exactly 3 seconds
+                    gsap.to("#preloader", {
+                        opacity: 0,
+                        duration: 1,
+                        pointerEvents: "none",
+                        ease: "power2.inOut"
+                    });
+
+                    const tl = gsap.timeline();
+                    tl.to(".intro-reveal", {
+                        opacity: 1,
+                        duration: 1.5,
+                        stagger: 0.2,
+                        ease: "power2.out"
+                    })
+                    .to(".accent-bar", {
+                        scaleX: 1,
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.out"
+                    }, "-=0.8")
+                    .to(".studio-tag", {
+                        opacity: 0.5,
+                        duration: 1
+                    }, "-=0.5");
+                }, 3000);
+
+                // 3. SCROLL REVEAL ENGINE
+                document.querySelectorAll('section').forEach((section) => {
+                    const elements = section.querySelectorAll('h2, p, .reveal-content, .service-item, .image-box');
+                    gsap.to(elements, {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        stagger: 0.1,
+                        ease: "power3.out"
+                    });
+                });
+
+                // Navigation State
+                const nav = document.querySelector('nav');
+                ScrollTrigger.create({
+                    trigger: "#slide-1",
+                    start: "top top",
+                    onLeave: () => { nav.classList.remove('on-dark'); nav.classList.add('scrolled'); },
+                    onEnterBack: () => { nav.classList.add('on-dark'); nav.classList.remove('scrolled'); }
+                });
+
+                // 4. INQUIRY SYSTEM
+                const leadForm = document.getElementById('leadForm');
+                if (leadForm && supabase) {
+                    leadForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const status = document.getElementById('formStatus');
+                        status.innerText = "Submitting...";
+                        status.style.opacity = "1";
+
+                        const { error } = await supabase.from('inquiries').insert([{
+                            name: document.getElementById('leadName').value,
+                            phone: document.getElementById('leadPhone').value,
+                            email: document.getElementById('leadEmail').value,
+                            city: document.getElementById('leadCity').value
+                        }]);
+
+                        if (error) {
+                            status.innerText = "Error submitting. Please try again.";
+                            status.style.color = "red";
+                        } else {
+                            status.innerText = "Inquiry received. We will connect shortly.";
+                            status.style.color = "#C5A059";
+                            leadForm.reset();
+                        }
+                    });
+                }
+                
+                // 5. DIARIES ENGINE
+                async function fetchDiaries() {
+                    if (!supabase) return;
+                    const { data, error } = await supabase
+                        .from('diaries')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    
+                    if (data && !error) {
+                        const container = document.getElementById('diaries-container');
+                        container.innerHTML = '';
+                        data.forEach(item => {
+                            const card = document.createElement('div');
+                            card.style.cssText = `
+                                min-width: 450px;
+                                height: 550px;
+                                position: relative;
+                                overflow: hidden;
+                                background: #000;
+                                flex-shrink: 0;
+                            `;
+                            
+                            const isVlog = item.type === 'vlog';
+                            
+                            card.innerHTML = `
+                                <img src="${item.media_url}" style="width:100%; height:100%; object-fit:cover; opacity:0.7; transition: transform 0.8s ease;" class="diary-img">
+                                <div style="position:absolute; inset:0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%);"></div>
+                                <div style="position:absolute; bottom:40px; left:40px; right:40px; color:#fff;">
+                                    <p style="font-size:0.7rem; letter-spacing:0.3em; color:var(--color-accent); margin-bottom:10px;">${isVlog ? 'CINEMATIC VLOG' : 'EDITORIAL PROJECT'}</p>
+                                    <h3 style="font-size:1.8rem; line-height:1.2; font-style:italic;">${item.title}</h3>
+                                    <div style="margin-top:20px; font-size:0.8rem; opacity:0.6; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
+                                        ${item.content}
+                                    </div>
+                                    <a href="${isVlog ? item.content : '#'}" class="nav-link" style="display:inline-block; margin-top:20px; color:#fff; font-size:0.7rem; letter-spacing:0.2em; border-bottom:1px solid #fff; padding-bottom:5px;">${isVlog ? 'WATCH VLOG' : 'READ DIARY'}</a>
+                                </div>
+                            `;
+                            
+                            card.addEventListener('mouseenter', () => {
+                                card.querySelector('.diary-img').style.transform = 'scale(1.1)';
+                            });
+                            card.addEventListener('mouseleave', () => {
+                                card.querySelector('.diary-img').style.transform = 'scale(1)';
+                            });
+                            
+                            container.appendChild(card);
+                        });
+                    }
+                }
+                fetchDiaries();
+            } catch (err) {
+                console.error("Init failed:", err);
             }
         });
 
-        // Preloader & Intro Sequence
-        window.addEventListener('load', () => {
-            const tl = gsap.timeline();
-            
-            tl.to(".preloader-visible-five", {
-                opacity: 1,
-                duration: 1.2,
-                ease: "power2.out"
-            })
-            .to("#preloader", {
-                opacity: 0,
-                duration: 1.5,
-                delay: 0.5,
-                pointerEvents: "none",
-                ease: "power2.inOut"
-            })
-            .to("#slide-1 .intro-reveal", {
-                opacity: 1,
-                y: 0,
-                duration: 1.5,
-                stagger: 0.2,
-                ease: "expo.out"
-            }, "-=1.4") 
-            .to("#slide-1 .accent-bar", {
-                scaleX: 1,
-                opacity: 1,
-                duration: 1,
-                ease: "power2.out"
-            }, "-=0.8");
-        });
-
+        async function fetchSiteConfig(supabase) {
+            if (!supabase) return;
+            try {
+                const { data } = await supabase.from('config').select('key, value').timeout(2500);
+                if (data) {
+                    data.forEach(item => {
+                        const el = document.getElementById(item.key);
+                        if (el) {
+                            if (el.tagName === 'A') el.href = item.value;
+                            else if (el.tagName === 'IMG') el.src = item.value;
+                            else el.innerText = item.value;
+                        }
+                    });
+                }
+            } catch (e) { console.warn("CMS Sync inactive."); }
+        }
     </script>
 </body>
 </html>

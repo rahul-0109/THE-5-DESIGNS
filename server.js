@@ -117,12 +117,8 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    // 3. Config/Settings (GET & POST: Protected)
+    // 3. Config/Settings (GET: Open, POST: Protected)
     if (pathname === '/api/settings') {
-        if (!checkAuth(req)) {
-            return sendJSON(res, 403, { success: false, message: "Access Denied" });
-        }
-
         if (method === 'GET') {
             const db = readDB();
             // Return settings as a list of key-value pairs or raw config object
@@ -130,6 +126,9 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (method === 'POST') {
+            if (!checkAuth(req)) {
+                return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            }
             const body = await getJsonBody(req); // Expecting array of {key, value} or raw updates object
             const db = readDB();
 

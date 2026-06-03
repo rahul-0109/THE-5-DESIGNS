@@ -83,7 +83,7 @@
 
         .diaries-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             padding: 0 10% 5rem 10%;
         }
@@ -163,6 +163,13 @@
             color: var(--color-accent);
             border-color: var(--color-accent);
         }
+
+        @media (max-width: 1024px) {
+            .diaries-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .diaries-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -178,13 +185,22 @@
         <div style="width: 32px;"></div> <!-- Spacer to center the nav-center -->
     </nav>
 
-    <div class="header-section">
+    <div class="header-section" style="padding-bottom: 2%;">
         <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Insights & Journal</p>
-        <h1 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-style: italic; font-weight: 400;">The Diaries</h1>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-style: italic; font-weight: 400;">The Blogs</h1>
     </div>
 
-    <div class="diaries-grid" id="diaries-container">
-        <!-- Diaries injected here via JS -->
+    <div class="diaries-grid" id="blogs-container">
+        <!-- Blogs injected here via JS -->
+    </div>
+
+    <div class="header-section" style="padding-bottom: 2%; padding-top: 5%;">
+        <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Cinematic Visuals</p>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-style: italic; font-weight: 400;">The Vlogs</h1>
+    </div>
+
+    <div class="diaries-grid" id="vlogs-container">
+        <!-- Vlogs injected here via JS -->
     </div>
 
     <script>
@@ -194,29 +210,46 @@
                 const resData = await response.json();
                 
                 if (response.ok && resData.success && resData.data) {
-                    const container = document.getElementById('diaries-container');
-                    container.innerHTML = '';
+                    const blogsContainer = document.getElementById('blogs-container');
+                    const vlogsContainer = document.getElementById('vlogs-container');
                     
-                    if (resData.data.length === 0) {
-                        container.innerHTML = '<p style="text-align: center; width: 100%; opacity: 0.5;">No diaries published yet.</p>';
-                        return;
-                    }
+                    blogsContainer.innerHTML = '';
+                    vlogsContainer.innerHTML = '';
+                    
+                    const blogs = resData.data.filter(i => i.type === 'article');
+                    const vlogs = resData.data.filter(i => i.type === 'vlog');
+                    
+                    if (blogs.length === 0) blogsContainer.innerHTML = '<p style="text-align: center; width: 100%; opacity: 0.5;">No blogs published yet.</p>';
+                    if (vlogs.length === 0) vlogsContainer.innerHTML = '<p style="text-align: center; width: 100%; opacity: 0.5;">No vlogs published yet.</p>';
 
-                    resData.data.forEach(item => {
-                        const isVlog = item.type === 'vlog';
+                    blogs.forEach(item => {
                         const card = document.createElement('div');
                         card.className = 'diary-card';
-                        
                         card.innerHTML = `
                             <img src="${item.media_url}" class="diary-img" alt="${item.title}">
                             <div class="diary-overlay">
-                                <p class="diary-type">${isVlog ? 'Cinematic Vlog' : 'Editorial Project'}</p>
+                                <p class="diary-type">Editorial Project</p>
                                 <h3 class="diary-title">${item.title}</h3>
                                 <div class="diary-content">${item.content}</div>
-                                <a href="${isVlog ? item.content : '#'}" target="${isVlog ? '_blank' : '_self'}" class="diary-btn">${isVlog ? 'Watch Vlog' : 'Read Diary'}</a>
+                                <a href="#" class="diary-btn">Read Diary</a>
                             </div>
                         `;
-                        container.appendChild(card);
+                        blogsContainer.appendChild(card);
+                    });
+
+                    vlogs.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'diary-card';
+                        card.innerHTML = `
+                            <img src="${item.media_url}" class="diary-img" alt="${item.title}">
+                            <div class="diary-overlay">
+                                <p class="diary-type">Cinematic Vlog</p>
+                                <h3 class="diary-title">${item.title}</h3>
+                                <div class="diary-content" style="-webkit-line-clamp:1;">${item.content}</div>
+                                <a href="${item.content}" target="_blank" class="diary-btn">Watch Vlog</a>
+                            </div>
+                        `;
+                        vlogsContainer.appendChild(card);
                     });
                 }
             } catch (err) {

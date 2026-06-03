@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Obsidian Suite | THE 5 DESIGNS</title>
+    <!-- Use similar fonts as index.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0F0F0F;
+            --color-text: #F5F5F0;
+            --color-accent: #C5A059;
+            --color-text-muted: #8E8E8E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation (Same as main site) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 4rem;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-style: italic;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-accent);
+        }
+
+        /* Project Hero */
+        .project-hero {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 4rem;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0.2) 50%, rgba(15,15,15,0.6) 100%);
+            z-index: -1;
+        }
+
+        .project-meta-tag {
+            color: var(--color-accent);
+            letter-spacing: 0.4em;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 6rem;
+            font-style: italic;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        /* Spaces Gallery */
+        .project-details {
+            padding: 8rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .space-section {
+            display: flex;
+            align-items: center;
+            gap: 6rem;
+            margin-bottom: 10rem;
+        }
+
+        .space-section.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .space-image-wrapper {
+            flex: 1.2;
+            position: relative;
+            overflow: hidden;
+            height: 70vh;
+        }
+
+        .space-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .space-image-wrapper:hover .space-image {
+            transform: scale(1.05);
+        }
+
+        .space-content {
+            flex: 1;
+        }
+
+        .space-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-style: italic;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: var(--color-accent);
+        }
+
+        .space-desc {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 6rem 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-style: italic;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1.5rem; }
+            .nav-center { display: none; }
+            .project-title { font-size: 3.5rem; }
+            .project-hero { padding: 2rem; }
+            .project-details { padding: 4rem 2rem; }
+            .space-section, .space-section.reverse { flex-direction: column; gap: 2rem; margin-bottom: 6rem; }
+            .space-image-wrapper { height: 50vh; width: 100%; }
+            .space-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">5</a>
+        <div class="nav-center">
+            <a href="/#slide-2" class="nav-link">Essence</a>
+            <a href="/#slide-5" class="nav-link">Projects</a>
+            <a href="/diaries.html" class="nav-link">Diaries</a>
+            <a href="/#slide-9" class="nav-link">Contact</a>
+        </div>
+        <div style="width: 32px;"></div> <!-- Spacer to center -->
+    </nav>
+
+    <!-- Dynamic Hero -->
+    <section class="project-hero">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-bg" alt="Project Cover">
+        <div class="hero-overlay"></div>
+        <div>
+            <p class="project-meta-tag">Featured Project</p>
+            <h1 class="project-title">The Obsidian Suite</h1>
+        </div>
+    </section>
+
+    <!-- Dynamic Spaces Gallery -->
+    <section class="project-details">
+        
+        <div class="space-section">
+            <div class="space-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1500" class="space-image" alt="Living Room">
+            </div>
+            <div class="space-content">
+                <h2 class="space-title">The Grand Living</h2>
+                <p class="space-desc">A seamless blend of moody aesthetics and abundant natural light. The grand living area is designed to evoke a sense of understated luxury, utilizing rich textures, custom millwork, and curated art pieces to create an atmosphere of profound exclusivity.</p>
+            </div>
+        </div>
+
+        <div class="space-section reverse">
+            <div class="space-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1600566753086-00f18efc2294?auto=format&fit=crop&q=80&w=1500" class="space-image" alt="Master Bedroom">
+            </div>
+            <div class="space-content">
+                <h2 class="space-title">Master Sanctuary</h2>
+                <p class="space-desc">A retreat within a retreat. The master bedroom features bespoke lighting configurations, acoustic dampening materials, and a monolithic bed frame that roots the space in tranquility. Every detail is meticulously calibrated for ultimate comfort.</p>
+            </div>
+        </div>
+
+        <div class="space-section">
+            <div class="space-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1556910103-1c02745a872f?auto=format&fit=crop&q=80&w=1500" class="space-image" alt="Kitchen">
+            </div>
+            <div class="space-content">
+                <h2 class="space-title">Culinary Atelier</h2>
+                <p class="space-desc">Precision engineering meets artisanal craftsmanship. The kitchen is outfitted with seamless stone countertops, concealed state-of-the-art appliances, and dramatic focal lighting that transforms meal preparation into a performative art.</p>
+            </div>
+        </div>
+
+        <div class="space-section reverse">
+            <div class="space-image-wrapper">
+                <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1500" class="space-image" alt="Bathroom">
+            </div>
+            <div class="space-content">
+                <h2 class="space-title">The Spa Enclave</h2>
+                <p class="space-desc">Carved from natural stone, the en-suite bathroom is a monumental expression of self-care. Featuring a freestanding sculptural tub, dual rainfall showers, and ambient floor lighting, it redefines the boundaries of domestic luxury.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        <div class="footer-logo">5</div>
+        <p style="color: var(--color-text-muted); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;">The 5 Designs © 2026</p>
+    </div>
+
+</body>
+</html>

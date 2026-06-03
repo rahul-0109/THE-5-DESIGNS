@@ -213,7 +213,8 @@
                             <input type="text" id="diary-title" placeholder="Project Title" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                             <input type="text" id="diary-image" placeholder="Cover Image URL" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                             <textarea id="diary-content" placeholder="Narrative / Content" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black h-32"></textarea>
-                            <button onclick="publishDiary('article')" class="w-full bg-black text-white py-3 rounded-lg text-sm font-medium">Publish Project</button>
+                            <button onclick="publishDiary('article')" id="btn-article-publish" class="w-full bg-black text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all">Publish Project</button>
+                            <input type="hidden" id="diary-id">
                         </div>
 
                         <!-- Option 2: Video Vlog -->
@@ -226,7 +227,30 @@
                             <input type="text" id="vlog-title" placeholder="Vlog Title" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                             <input type="text" id="vlog-url" placeholder="YouTube / Video Link" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                             <input type="text" id="vlog-image" placeholder="Thumbnail Image URL" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
-                            <button onclick="publishDiary('vlog')" class="w-full border border-black py-3 rounded-lg text-sm font-medium hover:bg-black hover:text-white transition-all">Upload Vlog</button>
+                            <button onclick="publishDiary('vlog')" id="btn-vlog-publish" class="w-full border border-black py-3 rounded-lg text-sm font-medium hover:bg-black hover:text-white transition-all">Upload Vlog</button>
+                            <input type="hidden" id="vlog-id">
+                        </div>
+                        
+                        <!-- Manage Diaries Section -->
+                        <div class="card p-6 col-span-1 md:col-span-2 space-y-4 mt-8">
+                            <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                                <h3 class="font-medium">Manage Existing Diaries & Vlogs</h3>
+                                <button onclick="loadManageDiaries()" class="text-xs text-gray-500 hover:text-black">Refresh</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                                            <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="manage-diaries-body" class="bg-white divide-y divide-gray-200 text-sm">
+                                        <tr><td colspan="3" class="px-4 py-4 text-center text-gray-400">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -435,13 +459,22 @@
             if (!title) return alert("Title is required");
 
             try {
+                let method = 'POST';
+                let reqBody = { type, title, media_url, content };
+                
+                let updateId = type === 'article' ? document.getElementById('diary-id')?.value : document.getElementById('vlog-id')?.value;
+                if (updateId) {
+                    method = 'PUT';
+                    reqBody.id = updateId;
+                }
+
                 const response = await fetch('/api/diaries', {
-                    method: 'POST',
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${sessionToken}`
                     },
-                    body: JSON.stringify({ type, title, media_url, content })
+                    body: JSON.stringify(reqBody)
                 });
                 const resData = await response.json();
 
@@ -452,17 +485,102 @@
                         document.getElementById('diary-title').value = '';
                         document.getElementById('diary-image').value = '';
                         document.getElementById('diary-content').value = '';
+                        if (document.getElementById('diary-id')) document.getElementById('diary-id').value = '';
+                        document.getElementById('btn-article-publish').innerText = 'Publish Project';
                     } else {
                         document.getElementById('vlog-title').value = '';
                         document.getElementById('vlog-url').value = '';
                         document.getElementById('vlog-image').value = '';
+                        if (document.getElementById('vlog-id')) document.getElementById('vlog-id').value = '';
+                        document.getElementById('btn-vlog-publish').innerText = 'Upload Vlog';
                     }
+                    loadManageDiaries();
                 } else {
                     alert("Error publishing: " + resData.message);
                 }
             } catch (e) {
                 alert("Request failed: " + e.message);
             }
+        }
+
+        async function loadManageDiaries() {
+            try {
+                const response = await fetch('/api/diaries');
+                const resData = await response.json();
+                if (response.ok && resData.success) {
+                    const tbody = document.getElementById('manage-diaries-body');
+                    tbody.innerHTML = '';
+                    if (resData.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-gray-400">No diaries found.</td></tr>';
+                        return;
+                    }
+                    window.diaryDataCache = resData.data;
+                    resData.data.forEach(d => {
+                        const typeLabel = d.type === 'article' ? '<span class="px-2 py-1 bg-black text-white rounded text-xs">Blog</span>' : '<span class="px-2 py-1 bg-amber-500 text-white rounded text-xs">Vlog</span>';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="px-4 py-3 whitespace-nowrap">${typeLabel}</td>
+                                <td class="px-4 py-3 text-gray-600 truncate max-w-[200px]">${d.title}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-right">
+                                    <button onclick="editDiary('${d.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                    <button onclick="deleteDiary('${d.id}')" class="text-red-600 hover:text-red-900">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function editDiary(id) {
+            const diary = window.diaryDataCache.find(d => d.id === id);
+            if (!diary) return;
+            if (diary.type === 'article') {
+                document.getElementById('diary-title').value = diary.title;
+                document.getElementById('diary-image').value = diary.media_url;
+                document.getElementById('diary-content').value = diary.content;
+                
+                let hiddenId = document.getElementById('diary-id');
+                if (!hiddenId) {
+                    hiddenId = document.createElement('input');
+                    hiddenId.type = 'hidden';
+                    hiddenId.id = 'diary-id';
+                    document.getElementById('diary-title').parentNode.appendChild(hiddenId);
+                }
+                hiddenId.value = diary.id;
+                document.getElementById('btn-article-publish').innerText = 'Update Project';
+            } else {
+                document.getElementById('vlog-title').value = diary.title;
+                document.getElementById('vlog-image').value = diary.media_url;
+                document.getElementById('vlog-url').value = diary.content;
+                
+                let hiddenId = document.getElementById('vlog-id');
+                if (!hiddenId) {
+                    hiddenId = document.createElement('input');
+                    hiddenId.type = 'hidden';
+                    hiddenId.id = 'vlog-id';
+                    document.getElementById('vlog-title').parentNode.appendChild(hiddenId);
+                }
+                hiddenId.value = diary.id;
+                document.getElementById('btn-vlog-publish').innerText = 'Update Vlog';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deleteDiary(id) {
+            if (isDemoMode) return alert("Disabled in demo mode");
+            if (!confirm("Are you sure you want to delete this?")) return;
+            try {
+                const response = await fetch('/api/diaries', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` },
+                    body: JSON.stringify({id})
+                });
+                if (response.ok) {
+                    showToast();
+                    loadManageDiaries();
+                }
+            } catch(e) {}
         }
 
         function enterDemoMode() {

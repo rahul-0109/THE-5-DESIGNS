@@ -671,7 +671,9 @@
         <div class="ombre-overlay"></div>
         <div class="content-wrap" style="transform: translateY(-20px);">
             <p id="hero_studio_text" class="intro-reveal" style="opacity: 0; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; color: var(--color-accent); margin-bottom: 1rem;">Design Studio</p>
-            <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic; color: #F5F5F0; margin-bottom: 1rem; font-weight: 400;">The <span class="brand-five">5</span> Designs</h1>
+            <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic; color: #F5F5F0; margin-bottom: 1rem; font-weight: 400;">
+                <span>The </span><span class="brand-five">5</span><span> Designs</span>
+            </h1>
             <div class="accent-bar" style="opacity: 0; height: 1px; width: 100%; background: var(--color-accent); transform: scaleX(0); margin: 2rem auto;"></div>
             <div id="hero_est_text" class="studio-tag" style="opacity: 0; font-size: 0.7rem; letter-spacing: 0.4em;">EST. MMXIX</div>
         </div>
@@ -823,7 +825,7 @@
         </div>
     </section>
 
-    <section id="slide-5">
+    <section id="slide-5" style="cursor: pointer;" onclick="window.open('project.html?id=obsidian', '_blank')">
         <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="full-bleed-image" alt="Project 2">
         <div class="ombre-vignette"></div>
         <div class="project-meta">
@@ -1052,33 +1054,35 @@
                 });
 
                 // 2. CINEMATIC PRELOADER & INTRO (Hard 2.5s)
-                setTimeout(() => {
-                    // Start reveal sequence at exactly 2 seconds
-                    gsap.to("#preloader", {
-                        opacity: 0,
-                        duration: 0.5,
-                        pointerEvents: "none",
-                        ease: "power2.inOut"
-                    });
+                document.fonts.ready.then(function () {
+                    setTimeout(() => {
+                        // Start reveal sequence at exactly 2 seconds
+                        gsap.to("#preloader", {
+                            opacity: 0,
+                            duration: 0.5,
+                            pointerEvents: "none",
+                            ease: "power2.inOut"
+                        });
 
-                    const tl = gsap.timeline();
-                    tl.to(".intro-reveal", {
-                        opacity: 1,
-                        duration: 1.2,
-                        stagger: 0.2,
-                        ease: "power2.out"
-                    })
-                    .to(".accent-bar", {
-                        scaleX: 1,
-                        opacity: 1,
-                        duration: 1,
-                        ease: "power2.out"
-                    }, "-=0.8")
-                    .to(".studio-tag", {
-                        opacity: 0.5,
-                        duration: 1
-                    }, "-=0.5");
-                }, 2000);
+                        const tl = gsap.timeline();
+                        tl.to(".intro-reveal", {
+                            opacity: 1,
+                            duration: 1.2,
+                            stagger: 0.2,
+                            ease: "power2.out"
+                        })
+                        .to(".accent-bar", {
+                            scaleX: 1,
+                            opacity: 1,
+                            duration: 1,
+                            ease: "power2.out"
+                        }, "-=0.8")
+                        .to(".studio-tag", {
+                            opacity: 0.5,
+                            duration: 1
+                        }, "-=0.5");
+                    }, 2000);
+                });
 
                 // 3. SCROLL REVEAL ENGINE
                 document.querySelectorAll('section').forEach((section) => {

@@ -183,6 +183,38 @@ const server = http.createServer(async (req, res) => {
                 return sendJSON(res, 500, { success: false, message: "Database write failure" });
             }
         }
+
+        if (method === 'PUT') {
+            if (!checkAuth(req)) return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            const body = await getJsonBody(req);
+            if (!body.id) return sendJSON(res, 400, { success: false, message: "ID is required" });
+            
+            const db = readDB();
+            const index = db.diaries.findIndex(d => d.id === body.id);
+            if (index !== -1) {
+                db.diaries[index] = { ...db.diaries[index], ...body };
+                if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Updated successfully" });
+                else return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            } else {
+                return sendJSON(res, 404, { success: false, message: "Diary not found" });
+            }
+        }
+
+        if (method === 'DELETE') {
+            if (!checkAuth(req)) return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            const body = await getJsonBody(req);
+            if (!body.id) return sendJSON(res, 400, { success: false, message: "ID is required" });
+            
+            const db = readDB();
+            const initialLength = db.diaries.length;
+            db.diaries = db.diaries.filter(d => d.id !== body.id);
+            if (db.diaries.length !== initialLength) {
+                if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Deleted successfully" });
+                else return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            } else {
+                return sendJSON(res, 404, { success: false, message: "Diary not found" });
+            }
+        }
     }
 
     // --- STATIC FILES SERVING ---

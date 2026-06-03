@@ -951,14 +951,8 @@
         // CORE INITIALIZATION
         document.addEventListener('DOMContentLoaded', () => {
             try {
-                // Initialize Supabase Client
-                const SB_URL = localStorage.getItem('sb_url');
-                const SB_KEY = localStorage.getItem('sb_key');
-                let supabase = null;
-                if (SB_URL && SB_KEY && window.supabase) {
-                    supabase = window.supabase.createClient(SB_URL, SB_KEY);
-                    fetchSiteConfig(supabase);
-                }
+                // Initialize local site config from server settings
+                fetchSiteConfig();
 
                 // Initialize Lenis Smooth Scroll
                 const lenis = new Lenis({
@@ -1107,100 +1101,116 @@
 
                 // 4. INQUIRY SYSTEM
                 const leadForm = document.getElementById('leadForm');
-                if (leadForm && supabase) {
+                if (leadForm) {
                     leadForm.addEventListener('submit', async (e) => {
                         e.preventDefault();
                         const status = document.getElementById('formStatus');
                         status.innerText = "Submitting...";
                         status.style.opacity = "1";
 
-                        const { error } = await supabase.from('inquiries').insert([{
-                            name: document.getElementById('leadName').value,
-                            phone: document.getElementById('leadPhone').value,
-                            email: document.getElementById('leadEmail').value,
-                            city: document.getElementById('leadCity').value
-                        }]);
-
-                        if (error) {
-                            status.innerText = "Error submitting. Please try again.";
+                        try {
+                            const response = await fetch('/api/leads', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    name: document.getElementById('leadName').value,
+                                    phone: document.getElementById('leadPhone').value,
+                                    email: document.getElementById('leadEmail').value,
+                                    city: document.getElementById('leadCity').value
+                                })
+                            });
+                            
+                            const resData = await response.json();
+                            if (response.ok && resData.success) {
+                                status.innerText = "Inquiry received. We will connect shortly.";
+                                status.style.color = "#C5A059";
+                                leadForm.reset();
+                            } else {
+                                status.innerText = "Error: " + (resData.message || "Could not submit inquiry");
+                                status.style.color = "red";
+                            }
+                        } catch (err) {
+                            status.innerText = "Connection error. Please try again.";
                             status.style.color = "red";
-                        } else {
-                            status.innerText = "Inquiry received. We will connect shortly.";
-                            status.style.color = "#C5A059";
-                            leadForm.reset();
                         }
                     });
                 }
                 
                 // 5. DIARIES ENGINE
-                async function fetchDiaries() {
-                    if (!supabase) return;
-                    const { data, error } = await supabase
-                        .from('diaries')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-                    
-                    if (data && !error) {
-                        const container = document.getElementById('diaries-container');
-                        container.innerHTML = '';
-                        data.forEach(item => {
-                            const card = document.createElement('div');
-                            card.style.cssText = `
-                                min-width: 450px;
-                                height: 550px;
-                                position: relative;
-                                overflow: hidden;
-                                background: #000;
-                                flex-shrink: 0;
-                            `;
-                            
-                            const isVlog = item.type === 'vlog';
-                            
-                            card.innerHTML = `
-                                <img src="${item.media_url}" style="width:100%; height:100%; object-fit:cover; opacity:0.7; transition: transform 0.8s ease;" class="diary-img">
-                                <div style="position:absolute; inset:0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%);"></div>
-                                <div style="position:absolute; bottom:40px; left:40px; right:40px; color:#fff;">
-                                    <p style="font-size:0.7rem; letter-spacing:0.3em; color:var(--color-accent); margin-bottom:10px;">${isVlog ? 'CINEMATIC VLOG' : 'EDITORIAL PROJECT'}</p>
-                                    <h3 style="font-size:1.8rem; line-height:1.2; font-style:italic;">${item.title}</h3>
-                                    <div style="margin-top:20px; font-size:0.8rem; opacity:0.6; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
-                                        ${item.content}
-                                    </div>
-                                    <a href="${isVlog ? item.content : '#'}" class="nav-link" style="display:inline-block; margin-top:20px; color:#fff; font-size:0.7rem; letter-spacing:0.2em; border-bottom:1px solid #fff; padding-bottom:5px;">${isVlog ? 'WATCH VLOG' : 'READ DIARY'}</a>
-                                </div>
-                            `;
-                            
-                            card.addEventListener('mouseenter', () => {
-                                card.querySelector('.diary-img').style.transform = 'scale(1.1)';
-                            });
-                            card.addEventListener('mouseleave', () => {
-                                card.querySelector('.diary-img').style.transform = 'scale(1)';
-                            });
-                            
-                            container.appendChild(card);
-                        });
-                    }
-                }
                 fetchDiaries();
             } catch (err) {
                 console.error("Init failed:", err);
             }
         });
 
-        async function fetchSiteConfig(supabase) {
-            if (!supabase) return;
+        async function fetchDiaries() {
             try {
-                const { data } = await supabase.from('config').select('key, value').timeout(2500);
-                if (data) {
-                    data.forEach(item => {
-                        const el = document.getElementById(item.key);
+                const response = await fetch('/api/diaries');
+                const resData = await response.json();
+                if (response.ok && resData.success && resData.data) {
+                    const container = document.getElementById('diaries-container');
+                    container.innerHTML = '';
+                    resData.data.forEach(item => {
+                        const card = document.createElement('div');
+                        card.style.cssText = `
+                            min-width: 450px;
+                            height: 550px;
+                            position: relative;
+                            overflow: hidden;
+                            background: #000;
+                            flex-shrink: 0;
+                        `;
+                        
+                        const isVlog = item.type === 'vlog';
+                        
+                        card.innerHTML = `
+                            <img src="${item.media_url}" style="width:100%; height:100%; object-fit:cover; opacity:0.7; transition: transform 0.8s ease;" class="diary-img">
+                            <div style="position:absolute; inset:0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%);"></div>
+                            <div style="position:absolute; bottom:40px; left:40px; right:40px; color:#fff;">
+                                <p style="font-size:0.7rem; letter-spacing:0.3em; color:var(--color-accent); margin-bottom:10px;">${isVlog ? 'CINEMATIC VLOG' : 'EDITORIAL PROJECT'}</p>
+                                <h3 style="font-size:1.8rem; line-height:1.2; font-style:italic;">${item.title}</h3>
+                                <div style="margin-top:20px; font-size:0.8rem; opacity:0.6; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
+                                    ${item.content}
+                                </div>
+                                <a href="${isVlog ? item.content : '#'}" class="nav-link" style="display:inline-block; margin-top:20px; color:#fff; font-size:0.7rem; letter-spacing:0.2em; border-bottom:1px solid #fff; padding-bottom:5px;">${isVlog ? 'WATCH VLOG' : 'READ DIARY'}</a>
+                            </div>
+                        `;
+                        
+                        card.addEventListener('mouseenter', () => {
+                            card.querySelector('.diary-img').style.transform = 'scale(1.1)';
+                        });
+                        card.addEventListener('mouseleave', () => {
+                            card.querySelector('.diary-img').style.transform = 'scale(1)';
+                        });
+                        
+                        container.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load diaries:", err);
+            }
+        }
+
+        async function fetchSiteConfig() {
+            try {
+                const response = await fetch('/api/settings', {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
+                });
+                const resData = await response.json();
+                if (response.ok && resData.success && resData.data) {
+                    const data = resData.data;
+                    Object.keys(data).forEach(key => {
+                        const el = document.getElementById(key);
                         if (el) {
-                            if (el.tagName === 'A') el.href = item.value;
-                            else if (el.tagName === 'IMG') el.src = item.value;
-                            else el.innerText = item.value;
+                            if (el.tagName === 'A') el.href = data[key];
+                            else if (el.tagName === 'IMG') el.src = data[key];
+                            else el.innerText = data[key];
                         }
                     });
                 }
-            } catch (e) { console.warn("CMS Sync inactive."); }
+            } catch (e) { 
+                console.warn("CMS Dynamic Sync offline."); 
+            }
         }
     </script>
 </body>

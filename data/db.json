@@ -1,0 +1,58 @@
+{
+  "config": {
+    "admin_password": "admin",
+    "hero_studio_text": "Design Studio",
+    "hero_main_title": "The 5 Designs",
+    "hero_est_text": "EST. MMXIX",
+    "hero_image": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000",
+    "essence_image": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000",
+    "whatsapp_number": "+919492010909",
+    "founder_image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1000",
+    "founder_p1": "The 5 Designs - A studio built on a simple belief: true luxury lies in the experience.",
+    "founder_p4": "This is my promise to you - A Home Crafted with integrity, mastery and genuine care",
+    "instagram_url": "https://instagram.com/",
+    "linkedin_url": "https://linkedin.com/",
+    "facebook_url": "https://facebook.com/",
+    "x_url": "https://x.com/",
+    "reddit_url": "https://reddit.com/",
+    "quora_url": "https://quora.com/",
+    "youtube_url": "https://youtube.com/",
+    "pinterest_url": "https://pinterest.com/"
+  },
+  "inquiries": [
+    {
+      "id": "1",
+      "created_at": "2026-05-25T12:00:00.000Z",
+      "name": "Jane Smith",
+      "phone": "+91 98765 43210",
+      "email": "jane@example.com",
+      "city": "Mumbai"
+    },
+    {
+      "id": "2",
+      "created_at": "2026-05-25T14:30:00.000Z",
+      "name": "Aarav Sharma",
+      "phone": "+91 91234 56789",
+      "email": "aarav.sharma@example.com",
+      "city": "Delhi"
+    }
+  ],
+  "diaries": [
+    {
+      "id": "1",
+      "type": "article",
+      "title": "Crafting the Obsidian Suite",
+      "media_url": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000",
+      "content": "A detailed case study exploring the use of high-contrast natural stone, glass surfaces, and integrated lighting systems to construct a serene executive pavilion.",
+      "created_at": "2026-05-25T10:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "type": "vlog",
+      "title": "Minimalist Material Selection Vlog",
+      "media_url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2000",
+      "content": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "created_at": "2026-05-25T11:15:00.000Z"
+    }
+  ]
+}

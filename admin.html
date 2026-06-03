@@ -6,7 +6,6 @@
     <title>Admin Dashboard | THE 5 DESIGNS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Outfit', sans-serif; background-color: #F9F9F7; }
         .font-display { font-family: 'Playfair Display', serif; }
@@ -57,7 +56,7 @@
                 <div class="flex items-center space-y-0 space-x-4">
                     <span id="connection-status" class="flex items-center text-xs text-red-500">
                         <span class="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse"></span>
-                        Supabase Offline
+                        Studio Offline
                     </span>
                 </div>
             </header>
@@ -247,19 +246,15 @@
             <div class="space-y-4 text-left">
                 <div class="bg-amber-50 border border-amber-100 p-4 rounded-lg mb-6 text-left">
                     <p class="text-[11px] text-amber-800 leading-relaxed">
-                        <strong>Quick Start:</strong> To see the panel in action, click "Try Demo Dashboard". To connect your own live data later, use your Supabase credentials.
+                        <strong>Studio Credentials:</strong> Enter the Master Studio Passcode to authenticate with your Node.js backend database and access site settings, inquiries, and diaries.
                     </p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Supabase API URL</label>
-                    <input type="text" id="sb-url" placeholder="https://xyz.supabase.co" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-black focus:border-black sm:text-sm">
-                </div>
-                <div>
                     <label class="block text-sm font-medium text-gray-700">Studio Passcode</label>
-                    <input type="password" id="admin-pass" placeholder="Enter Master Password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-black focus:border-black sm:text-sm">
+                    <input type="password" id="admin-pass" placeholder="Enter Master Passcode" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-black focus:border-black sm:text-sm">
                 </div>
                 <div class="space-y-3">
-                    <button onclick="connectSupabase()" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 transition-all">
+                    <button onclick="loginLocal()" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 transition-all">
                         Authenticate & Connect
                     </button>
                     <button onclick="enterDemoMode()" class="w-full flex justify-center py-3 px-4 border border-gray-200 rounded-md shadow-sm text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 transition-all">
@@ -271,117 +266,216 @@
     </div>
 
     <script>
-        let supabaseClient = null;
+        let sessionToken = localStorage.getItem('admin_token') || null;
+        let isDemoMode = false;
 
         function showSection(id) {
             document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id + '-section').classList.remove('hidden');
             
             document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active', 'bg-black', 'text-white'));
-            event.currentTarget.classList.add('active', 'bg-black', 'text-white');
             
-            document.getElementById('section-title').innerText = event.currentTarget.innerText;
+            // Set active class properly
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active', 'bg-black', 'text-white');
+                document.getElementById('section-title').innerText = event.currentTarget.innerText;
+            }
         }
 
-        async function connectSupabase() {
-            const url = document.getElementById('sb-url').value;
-            const pass = document.getElementById('admin-pass').value;
-            
-            if(!url || !pass) return alert("Please enter URL and Passcode");
+        async function loginLocal() {
+            const passcode = document.getElementById('admin-pass').value;
+            if (!passcode) return alert("Please enter the Studio Passcode");
             
             try {
-                const sbKey = prompt("Please confirm your Supabase Anon Key for security:");
-                if(!sbKey) return;
-
-                supabaseClient = supabase.createClient(url, sbKey);
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+                const resData = await response.json();
                 
-                const { data, error } = await supabaseClient
-                    .from('config')
-                    .select('value')
-                    .eq('key', 'admin_password')
-                    .single();
-                
-                if (error || (data && data.value !== pass)) {
-                    alert("Authentication Failed: Invalid Studio Passcode");
-                    return;
+                if (response.ok && resData.success) {
+                    sessionToken = resData.token;
+                    localStorage.setItem('admin_token', sessionToken);
+                    initDashboard();
+                } else {
+                    alert("Authentication Failed: " + (resData.message || "Invalid Passcode"));
                 }
-
-                localStorage.setItem('sb_url', url);
-                localStorage.setItem('sb_key', sbKey);
-                
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('connection-status').innerHTML = `
-                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                    Supabase Online
-                `;
-                document.getElementById('connection-status').classList.remove('text-red-500');
-                document.getElementById('connection-status').classList.add('text-green-600');
-                
-                fetchLeads();
             } catch (e) {
                 alert("Connection failed: " + e.message);
             }
         }
 
-        async function fetchLeads() {
-            if(!supabaseClient) return;
-            // This will work once the 'inquiries' table is created
-            const { data, error } = await supabaseClient.from('inquiries').select('*').order('created_at', { ascending: false });
+        async function initDashboard() {
+            document.getElementById('login-overlay').classList.add('hidden');
+            const status = document.getElementById('connection-status');
+            status.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                Studio Server Online
+            `;
+            status.classList.remove('text-red-500');
+            status.classList.add('text-green-600');
             
-            if (data) {
+            fetchLeads();
+            fetchSettings();
+        }
+
+        async function fetchLeads() {
+            if (isDemoMode) {
+                // Populate mock demo leads
                 const tbody = document.getElementById('leads-table-body');
-                if(data.length > 0) {
-                    tbody.innerHTML = data.map(lead => `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(lead.created_at).toLocaleDateString()}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${lead.name}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.phone}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.email}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.city}</td>
-                        </tr>
-                    `).join('');
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2026-05-25</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jane Smith (Demo)</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">+91 98765 43210</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">jane@example.com</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mumbai</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/leads', {
+                    headers: { 'Authorization': `Bearer ${sessionToken}` }
+                });
+                if (!response.ok) throw new Error("Unauthorized");
+                const resData = await response.json();
+                
+                if (resData.success && resData.data) {
+                    const tbody = document.getElementById('leads-table-body');
+                    if (resData.data.length > 0) {
+                        tbody.innerHTML = resData.data.map(lead => `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(lead.created_at).toLocaleDateString()}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${lead.name}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.phone}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.email}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lead.city}</td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">No inquiries found yet.</td></tr>`;
+                    }
                 }
+            } catch (e) {
+                console.error("Failed to fetch leads:", e);
+                logout();
             }
         }
 
-        function enterDemoMode() {
-            document.getElementById('login-overlay').classList.add('hidden');
-            document.getElementById('connection-status').innerHTML = `
-                <span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>
-                Demo Mode (Read-Only)
-            `;
-            document.getElementById('connection-status').classList.remove('text-red-500');
-            document.getElementById('connection-status').classList.add('text-amber-600');
-        }
-
-        // Auto-login if creds exist
-        window.onload = () => {
-            const url = localStorage.getItem('sb_url');
-            const key = localStorage.getItem('sb_key');
-            if(url && key) {
-                document.getElementById('sb-url').value = url;
-                document.getElementById('sb-key').value = key;
-                connectSupabase();
+        async function fetchSettings() {
+            if (isDemoMode) return;
+            try {
+                const response = await fetch('/api/settings', {
+                    headers: { 'Authorization': `Bearer ${sessionToken}` }
+                });
+                if (!response.ok) throw new Error("Unauthorized");
+                const resData = await response.json();
+                
+                if (resData.success && resData.data) {
+                    const config = resData.data;
+                    Object.keys(config).forEach(key => {
+                        const input = document.querySelector(`input[data-key="${key}"], textarea[data-key="${key}"]`);
+                        if (input) {
+                            input.value = config[key];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to fetch settings:", e);
             }
         }
 
         async function saveSettings() {
-            if(!supabaseClient) return;
+            if (isDemoMode) return alert("Saving settings is disabled in Demo Mode");
             
-            const inputs = document.querySelectorAll('#settings-form input');
+            const inputs = document.querySelectorAll('#settings-form input, #settings-form textarea');
             const updates = Array.from(inputs).map(input => ({
                 key: input.getAttribute('data-key'),
                 value: input.value
             }));
 
-            // In Supabase, we use upsert for key-value settings
-            const { error } = await supabaseClient.from('config').upsert(updates, { onConflict: 'key' });
-
-            if(error) {
-                alert("Error saving: " + error.message);
-            } else {
-                showToast();
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
+                    body: JSON.stringify(updates)
+                });
+                const resData = await response.json();
+                
+                if (response.ok && resData.success) {
+                    showToast();
+                } else {
+                    alert("Error saving: " + resData.message);
+                }
+            } catch (e) {
+                alert("Request failed: " + e.message);
             }
+        }
+
+        async function publishDiary(type) {
+            if (isDemoMode) return alert("Publishing is disabled in Demo Mode");
+
+            let title, media_url, content;
+            if (type === 'article') {
+                title = document.getElementById('diary-title').value;
+                media_url = document.getElementById('diary-image').value;
+                content = document.getElementById('diary-content').value;
+            } else if (type === 'vlog') {
+                title = document.getElementById('vlog-title').value;
+                content = document.getElementById('vlog-url').value;
+                media_url = document.getElementById('vlog-image').value;
+            }
+
+            if (!title) return alert("Title is required");
+
+            try {
+                const response = await fetch('/api/diaries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
+                    body: JSON.stringify({ type, title, media_url, content })
+                });
+                const resData = await response.json();
+
+                if (response.ok && resData.success) {
+                    showToast();
+                    // Clear inputs
+                    if (type === 'article') {
+                        document.getElementById('diary-title').value = '';
+                        document.getElementById('diary-image').value = '';
+                        document.getElementById('diary-content').value = '';
+                    } else {
+                        document.getElementById('vlog-title').value = '';
+                        document.getElementById('vlog-url').value = '';
+                        document.getElementById('vlog-image').value = '';
+                    }
+                } else {
+                    alert("Error publishing: " + resData.message);
+                }
+            } catch (e) {
+                alert("Request failed: " + e.message);
+            }
+        }
+
+        function enterDemoMode() {
+            isDemoMode = true;
+            document.getElementById('login-overlay').classList.add('hidden');
+            const status = document.getElementById('connection-status');
+            status.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>
+                Demo Mode (Read-Only)
+            `;
+            status.classList.remove('text-red-500');
+            status.classList.add('text-amber-600');
+            fetchLeads();
         }
 
         function showToast() {
@@ -393,9 +487,15 @@
         }
 
         function logout() {
-            localStorage.removeItem('sb_url');
-            localStorage.removeItem('sb_key');
+            localStorage.removeItem('admin_token');
             location.reload();
+        }
+
+        // Auto-login if token exists
+        window.onload = () => {
+            if (sessionToken) {
+                initDashboard();
+            }
         }
     </script>
 </body>

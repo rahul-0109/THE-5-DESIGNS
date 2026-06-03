@@ -1,0 +1,10 @@
+{
+  "name": "the-5-designs-portfolio",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

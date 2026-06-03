@@ -360,8 +360,17 @@
             font-size: 11.2rem;
             color: #C5A059;
             font-style: italic;
+            font-weight: 400;
             opacity: 0;
-            animation: singleReveal 2.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: singleReveal 2.0s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .brand-five {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.2rem;
+            color: #C5A059;
+            font-style: italic;
+            font-weight: 400;
         }
 
         @keyframes singleReveal {
@@ -613,7 +622,7 @@
     <div id="preloader">
         <div class="content-wrap" style="transform: translateY(-20px); text-align: center;">
             <p style="visibility: hidden; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; margin-bottom: 1rem;">Design Studio</p>
-            <h1 style="white-space: nowrap; font-size: 8rem; font-style: italic; color: #C5A059; opacity: 1;">
+            <h1 style="white-space: nowrap; font-size: 8rem; font-style: italic; color: #F5F5F0; opacity: 1; margin-bottom: 1rem; font-weight: 400;">
                 <span style="visibility: hidden;">The </span><span class="preloader-visible-five">5</span><span style="visibility: hidden;"> Designs</span>
             </h1>
             <div style="opacity: 0; height: 1px; width: 100%; margin: 2rem auto;"></div>
@@ -633,7 +642,7 @@
                 loader.style.pointerEvents = 'none';
                 document.body.style.overflow = 'auto';
             }
-        }, 4000);
+        }, 2500);
     </script>
 
     <nav class="on-dark">
@@ -642,7 +651,7 @@
         <div class="nav-center">
             <a href="#slide-5" class="nav-link">Projects</a>
             <span class="nav-divider"></span>
-            <a href="#slide-8" class="nav-link">Diaries</a>
+            <a href="/diaries.html" target="_blank" class="nav-link">Diaries</a>
         </div>
         
         <div class="nav-socials">
@@ -662,7 +671,7 @@
         <div class="ombre-overlay"></div>
         <div class="content-wrap" style="transform: translateY(-20px);">
             <p id="hero_studio_text" class="intro-reveal" style="opacity: 0; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; color: var(--color-accent); margin-bottom: 1rem;">Design Studio</p>
-            <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic;">The <span style="font-family: 'Playfair Display', serif; font-size: 1.4em; color: #C5A059;">5</span> Designs</h1>
+            <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic; color: #F5F5F0; margin-bottom: 1rem; font-weight: 400;">The <span class="brand-five">5</span> Designs</h1>
             <div class="accent-bar" style="opacity: 0; height: 1px; width: 100%; background: var(--color-accent); transform: scaleX(0); margin: 2rem auto;"></div>
             <div id="hero_est_text" class="studio-tag" style="opacity: 0; font-size: 0.7rem; letter-spacing: 0.4em;">EST. MMXIX</div>
         </div>
@@ -885,18 +894,6 @@
         </div>
     </section>
 
-    <!-- DIARIES SECTION (Slide 8) -->
-    <section id="slide-8" style="flex-direction: column; align-items: flex-start; justify-content: center; padding: 10% 0 5% 0; background: #000; color: #F5F5F0;">
-        <div style="padding: 0 10%; margin-bottom: 3rem;">
-            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">INSIGHTS</p>
-            <h2 style="font-size: 4rem; margin-bottom: 1rem;">The Diaries</h2>
-        </div>
-        
-        <div class="scroll-container" id="diaries-container" style="display: flex; gap: 2rem; overflow-x: auto; padding: 2rem 10% 5rem 10%; cursor: grab; width: 100%;">
-            <!-- Diaries injected via JS -->
-        </div>
-    </section>
-
     <section id="slide-9">
         <div class="inquiry-layout" style="display: flex; gap: 6rem; align-items: center; width: 100%; position: relative; z-index: 10;">
             <div class="inquiry-text" style="flex: 1; text-align: left;">
@@ -1054,12 +1051,12 @@
                     });
                 });
 
-                // 2. CINEMATIC PRELOADER & INTRO (Hard 3s)
+                // 2. CINEMATIC PRELOADER & INTRO (Hard 2.5s)
                 setTimeout(() => {
-                    // Start reveal sequence at exactly 3 seconds
+                    // Start reveal sequence at exactly 2 seconds
                     gsap.to("#preloader", {
                         opacity: 0,
-                        duration: 1,
+                        duration: 0.5,
                         pointerEvents: "none",
                         ease: "power2.inOut"
                     });
@@ -1067,7 +1064,7 @@
                     const tl = gsap.timeline();
                     tl.to(".intro-reveal", {
                         opacity: 1,
-                        duration: 1.5,
+                        duration: 1.2,
                         stagger: 0.2,
                         ease: "power2.out"
                     })
@@ -1081,7 +1078,7 @@
                         opacity: 0.5,
                         duration: 1
                     }, "-=0.5");
-                }, 3000);
+                }, 2000);
 
                 // 3. SCROLL REVEAL ENGINE
                 document.querySelectorAll('section').forEach((section) => {
@@ -1145,61 +1142,11 @@
                         }
                     });
                 }
-                
-                // 5. DIARIES ENGINE
-                fetchDiaries();
+                // Diaries fetching removed from main page
             } catch (err) {
                 console.error("Init failed:", err);
             }
         });
-
-        async function fetchDiaries() {
-            try {
-                const response = await fetch('/api/diaries');
-                const resData = await response.json();
-                if (response.ok && resData.success && resData.data) {
-                    const container = document.getElementById('diaries-container');
-                    container.innerHTML = '';
-                    resData.data.forEach(item => {
-                        const card = document.createElement('div');
-                        card.style.cssText = `
-                            min-width: 450px;
-                            height: 550px;
-                            position: relative;
-                            overflow: hidden;
-                            background: #000;
-                            flex-shrink: 0;
-                        `;
-                        
-                        const isVlog = item.type === 'vlog';
-                        
-                        card.innerHTML = `
-                            <img src="${item.media_url}" style="width:100%; height:100%; object-fit:cover; opacity:0.7; transition: transform 0.8s ease;" class="diary-img">
-                            <div style="position:absolute; inset:0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%);"></div>
-                            <div style="position:absolute; bottom:40px; left:40px; right:40px; color:#fff;">
-                                <p style="font-size:0.7rem; letter-spacing:0.3em; color:var(--color-accent); margin-bottom:10px;">${isVlog ? 'CINEMATIC VLOG' : 'EDITORIAL PROJECT'}</p>
-                                <h3 style="font-size:1.8rem; line-height:1.2; font-style:italic;">${item.title}</h3>
-                                <div style="margin-top:20px; font-size:0.8rem; opacity:0.6; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
-                                    ${item.content}
-                                </div>
-                                <a href="${isVlog ? item.content : '#'}" class="nav-link" style="display:inline-block; margin-top:20px; color:#fff; font-size:0.7rem; letter-spacing:0.2em; border-bottom:1px solid #fff; padding-bottom:5px;">${isVlog ? 'WATCH VLOG' : 'READ DIARY'}</a>
-                            </div>
-                        `;
-                        
-                        card.addEventListener('mouseenter', () => {
-                            card.querySelector('.diary-img').style.transform = 'scale(1.1)';
-                        });
-                        card.addEventListener('mouseleave', () => {
-                            card.querySelector('.diary-img').style.transform = 'scale(1)';
-                        });
-                        
-                        container.appendChild(card);
-                    });
-                }
-            } catch (err) {
-                console.error("Failed to load diaries:", err);
-            }
-        }
 
         async function fetchSiteConfig() {
             try {

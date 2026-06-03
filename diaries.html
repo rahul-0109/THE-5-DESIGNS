@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diaries | The 5 Designs</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #F5F5F0;
+            --color-text: #1A1A1A;
+            --color-accent: #C5A059;
+            --color-obsidian: #0A0A0A;
+            --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #000;
+            color: #F5F5F0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-style: italic;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #F5F5F0;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-accent);
+        }
+
+        .header-section {
+            padding: 12% 10% 5% 10%;
+            text-align: center;
+        }
+
+        .diaries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            padding: 0 10% 5rem 10%;
+        }
+
+        .diary-card {
+            position: relative;
+            height: 550px;
+            overflow: hidden;
+            background: #111;
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+
+        .diary-card:hover .diary-img {
+            transform: scale(1.05);
+        }
+
+        .diary-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: transform 0.8s ease;
+        }
+
+        .diary-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.9) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .diary-type {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--color-accent);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .diary-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            line-height: 1.2;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .diary-content {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .diary-btn {
+            display: inline-block;
+            color: #fff;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+            text-decoration: none;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .diary-btn:hover {
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">5</a>
+        
+        <div class="nav-center">
+            <a href="/#slide-5" class="nav-link">Projects</a>
+            <a href="/diaries.html" class="nav-link" style="color: var(--color-accent);">Diaries</a>
+        </div>
+        
+        <div style="width: 32px;"></div> <!-- Spacer to center the nav-center -->
+    </nav>
+
+    <div class="header-section">
+        <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Insights & Journal</p>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 4rem; font-style: italic; font-weight: 400;">The Diaries</h1>
+    </div>
+
+    <div class="diaries-grid" id="diaries-container">
+        <!-- Diaries injected here via JS -->
+    </div>
+
+    <script>
+        async function fetchDiaries() {
+            try {
+                const response = await fetch('/api/diaries');
+                const resData = await response.json();
+                
+                if (response.ok && resData.success && resData.data) {
+                    const container = document.getElementById('diaries-container');
+                    container.innerHTML = '';
+                    
+                    if (resData.data.length === 0) {
+                        container.innerHTML = '<p style="text-align: center; width: 100%; opacity: 0.5;">No diaries published yet.</p>';
+                        return;
+                    }
+
+                    resData.data.forEach(item => {
+                        const isVlog = item.type === 'vlog';
+                        const card = document.createElement('div');
+                        card.className = 'diary-card';
+                        
+                        card.innerHTML = `
+                            <img src="${item.media_url}" class="diary-img" alt="${item.title}">
+                            <div class="diary-overlay">
+                                <p class="diary-type">${isVlog ? 'Cinematic Vlog' : 'Editorial Project'}</p>
+                                <h3 class="diary-title">${item.title}</h3>
+                                <div class="diary-content">${item.content}</div>
+                                <a href="${isVlog ? item.content : '#'}" target="${isVlog ? '_blank' : '_self'}" class="diary-btn">${isVlog ? 'Watch Vlog' : 'Read Diary'}</a>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load diaries:", err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchDiaries);
+    </script>
+</body>
+</html>

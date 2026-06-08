@@ -1176,6 +1176,10 @@
                 if (response.ok && resData.success && resData.data) {
                     const data = resData.data;
                     Object.keys(data).forEach(key => {
+                        if (key === 'whatsapp_number') {
+                            const waLink = 'https://wa.me/' + data[key].replace(/[^0-9]/g, '');
+                            document.querySelectorAll('.whatsapp-float, [aria-label="Whatsapp"], [aria-label="Contact on WhatsApp"]').forEach(a => a.href = waLink);
+                        }
                         const el = document.getElementById(key);
                         if (el) {
                             if (el.tagName === 'A') el.href = data[key];

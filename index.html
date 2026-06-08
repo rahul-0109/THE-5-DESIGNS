@@ -1180,7 +1180,20 @@
                         if (el) {
                             if (el.tagName === 'A') el.href = data[key];
                             else if (el.tagName === 'IMG') el.src = data[key];
-                            else el.innerText = data[key];
+                            else if (key === 'hero_main_title') {
+                                const parts = data[key].split('5');
+                                if (parts.length === 2) {
+                                    el.innerHTML = `<span class="intro-reveal" style="opacity: 0;">${parts[0]}</span><span class="brand-five">5</span><span class="intro-reveal" style="opacity: 0;">${parts[1]}</span>`;
+                                } else {
+                                    el.innerText = data[key];
+                                }
+                            }
+                            else if (key.startsWith('founder_p') || key === 'slide2_main_title') {
+                                el.innerHTML = data[key].replace(/5/g, '<span class="hero-font"><span class="hero-five">5</span></span>');
+                            }
+                            else {
+                                el.innerText = data[key];
+                            }
                         }
                     });
                 }

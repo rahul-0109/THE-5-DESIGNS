@@ -170,10 +170,12 @@ const server = http.createServer(async (req, res) => {
             const db = readDB();
             const newDiary = {
                 id: String(Date.now()),
-                type: body.type, // 'article' or 'vlog'
+                type: body.type, // 'article'
                 title: body.title,
                 media_url: body.media_url || "",
                 content: body.content || "",
+                author: body.author || "Rahul Sharma, Founder - 5",
+                keywords: body.keywords || "",
                 created_at: new Date().toISOString()
             };
             db.diaries.unshift(newDiary);

@@ -42,7 +42,7 @@
 
         /* --- SLIDE STRUCTURE --- */
         section {
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -346,9 +346,12 @@
         
         #preloader {
             position: fixed;
-            inset: 0;
-            background: #F5F5F0;
-            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #1A1A1A;
+            z-index: 100000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -559,19 +562,7 @@
             background-image: url('https://grainy-gradients.vercel.app/noise.svg');
         }
         
-        /* Preloader Styles */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--color-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100000;
-        }
+        /* Preloader Styles handled above */
         .preloader-h1 {
             font-family: var(--font-display);
             font-size: 8rem; 
@@ -669,7 +660,7 @@
     <section id="slide-1">
         <img id="hero_image" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-image" alt="Hero">
         <div class="ombre-overlay"></div>
-        <div class="content-wrap" style="transform: translateY(-20px);">
+        <div class="content-wrap" style="transform: translateY(-20px); text-align: center;">
             <p id="hero_studio_text" class="intro-reveal" style="opacity: 0; letter-spacing: 0.5em; text-transform: uppercase; font-size: 1.0rem; color: var(--color-accent); margin-bottom: 1rem;">Design Studio</p>
             <h1 id="hero_main_title" class="intro-reveal" style="opacity: 0; white-space: nowrap; font-size: 8rem; font-style: italic; color: #F5F5F0; margin-bottom: 1rem; font-weight: 400;">
                 <span>The </span><span class="brand-five">5</span><span> Designs</span>
@@ -892,6 +883,30 @@
                     <h4 style="font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.2rem;">Premium Brands</h4>
                     <p style="font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7;">No markups give you the edge in using premium & international brands that add glory to your dream home.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+    <section id="slide-8" style="display: none; background-color: var(--color-obsidian); color: #F5F5F0; padding: 10% 5%;">
+        <div style="text-align: center; max-width: 1400px; width: 100%;">
+            <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Social Connect</p>
+            <h2 style="font-family: var(--font-display); font-size: 4rem; margin-bottom: 4rem; font-style: italic; font-weight: 400;">Featured Visuals</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; text-align: left;">
+                <!-- 9 Video placeholders as requested -->
+                <script>
+                    for(let i=1; i<=9; i++) {
+                        document.write(`
+                            <div class="video-card" style="display: flex; flex-direction: column; gap: 1.5rem; cursor: pointer; transition: transform 0.3s var(--ease-premium);">
+                                <div style="width: 100%; aspect-ratio: 16/9; background: #2a2a2a; overflow: hidden; position: relative; border: 1px solid rgba(197, 160, 89, 0.2);">
+                                    <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0.6;">
+                                        <svg style="width: 48px; height: 48px; fill: var(--color-accent);" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                                <h4 style="font-size: 1.2rem; letter-spacing: 0.05em; font-weight: 300; font-family: var(--font-display); border-bottom: 1px solid rgba(197, 160, 89, 0.3); padding-bottom: 0.5rem; display: inline-block; width: fit-content;">Video Title ${i}</h4>
+                            </div>
+                        `);
+                    }
+                </script>
             </div>
         </div>
     </section>

@@ -670,8 +670,14 @@
         </div>
     </section>
 
-    <section id="slide-2" style="align-items: center; justify-content: center; padding: 12% 10% 8% 10%;">
-        <div style="text-align: center; max-width: 1000px; width: 100%; margin: 0 auto;">
+    <section id="slide-2" style="align-items: center; justify-content: center; padding: 12% 10% 8% 10%; position: relative;">
+        <!-- Background Image with Overlay -->
+        <div style="position: absolute; inset: 0; z-index: 0;">
+            <img src="images/hero_image_sofa.jpg" alt="Hero Image Sofa" style="width: 100%; height: 100%; object-fit: cover;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,10,0.8), rgba(10,10,10,0.95));"></div>
+        </div>
+        
+        <div style="text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; position: relative; z-index: 1;">
             <p id="slide2_subtitle" style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem;">THE STUDIO</p>
             <h2 id="slide2_main_title" style="font-size: 5rem; margin-bottom: 4rem;">ESSENCE OF <span class="hero-font"><span class="hero-five">5</span></span></h2>
             

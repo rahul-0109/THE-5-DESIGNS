@@ -732,8 +732,8 @@
         /* Projects Grid CSS */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 4rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6rem 4rem;
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
@@ -749,7 +749,7 @@
         }
         .project-card .img-wrapper {
             width: 100%;
-            aspect-ratio: 4/5;
+            aspect-ratio: 3/4;
             overflow: hidden;
             position: relative;
         }
@@ -764,16 +764,25 @@
         }
         .project-card-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: 5rem;
             font-style: italic;
             font-weight: 400;
             color: #F5F5F0;
+            margin-bottom: 1rem;
+            line-height: 1.1;
         }
         .project-card-meta {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--color-accent);
+            margin-bottom: 0.5rem;
+        }
+        .project-card-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--color-text-muted);
+            color: rgba(245, 245, 240, 0.7);
         }
 
     </style>
@@ -805,7 +814,7 @@
         <div class="hero-overlay" style="background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0.4) 50%, rgba(15,15,15,0.8) 100%);"></div>
         
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; z-index: 10;">
-            <h1 class="brand-five" style="font-size: 14rem; line-height: 1; margin-bottom: 2rem; animation: singleReveal 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;">5</h1>
+            <h1 class="brand-five" style="font-size: 14rem; line-height: 1; margin-bottom: 8rem; animation: singleReveal 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;">5</h1>
             <p style="letter-spacing: 0.4em; text-transform: uppercase; font-size: 1rem; color: #F5F5F0; opacity: 0; animation: singleReveal 2s 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;">TRUE LUXURY LIES IN THE EXPERIENCE</p>
         </div>
 
@@ -822,9 +831,10 @@
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=1500" alt="EKAM">
                 </div>
-                <div>
+                <div style="margin-top: 1rem;">
+                    <p class="project-card-meta">Featured Project</p>
                     <h2 class="project-card-title">EKAM</h2>
-                    <p class="project-card-meta">01 / Residential</p>
+                    <p class="project-card-desc">A transcendent residential experience where bespoke interior design meets architectural harmony. Every detail is meticulously calibrated for profound exclusivity.</p>
                 </div>
             </div>
             
@@ -833,9 +843,10 @@
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1500" alt="The Obsidian Suite">
                 </div>
-                <div>
+                <div style="margin-top: 1rem;">
+                    <p class="project-card-meta">Commercial Concept</p>
                     <h2 class="project-card-title">The Obsidian Suite</h2>
-                    <p class="project-card-meta">02 / Commercial</p>
+                    <p class="project-card-desc">Dark, moody aesthetics combined with abundant natural light. A professional sanctuary designed to evoke absolute mastery and focus.</p>
                 </div>
             </div>
             
@@ -844,9 +855,10 @@
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1556910103-1c02745a872f?auto=format&fit=crop&q=80&w=1500" alt="House of Saraf">
                 </div>
-                <div>
+                <div style="margin-top: 1rem;">
+                    <p class="project-card-meta">Heritage Estate</p>
                     <h2 class="project-card-title">House of Saraf</h2>
-                    <p class="project-card-meta">03 / Estate</p>
+                    <p class="project-card-desc">A monumental expression of legacy and tradition, seamlessly integrated with modern comforts and concierge-level living.</p>
                 </div>
             </div>
             
@@ -855,9 +867,10 @@
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1500" alt="The Grand Pavilion">
                 </div>
-                <div>
+                <div style="margin-top: 1rem;">
+                    <p class="project-card-meta">Luxury Villa</p>
                     <h2 class="project-card-title">The Grand Pavilion</h2>
-                    <p class="project-card-meta">04 / Villa</p>
+                    <p class="project-card-desc">Rooted in tranquility, this expansive villa features acoustic dampening, custom millwork, and lighting configurations that redefine domestic luxury.</p>
                 </div>
             </div>
         </div>

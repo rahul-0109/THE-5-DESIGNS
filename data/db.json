@@ -54,5 +54,21 @@
       "content": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "created_at": "2026-05-25T11:15:00.000Z"
     }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "EKAM",
+      "meta": "Featured Projects",
+      "description": "A transcendent residential experience where bespoke interior design meets architectural harmony. Every detail is meticulously calibrated for profound exclusivity.",
+      "image_url": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=1500"
+    },
+    {
+      "id": "proj-2",
+      "title": "ANAND",
+      "meta": "Featured Projects",
+      "description": "A masterful blend of natural elements and timeless luxury, creating a sanctuary of peace and sophisticated living.",
+      "image_url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1500"
+    }
   ]
 }

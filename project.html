@@ -752,7 +752,7 @@
         }
         .project-card .img-wrapper {
             width: 100%;
-            aspect-ratio: 3/4;
+            aspect-ratio: 4/3;
             overflow: hidden;
             position: relative;
         }
@@ -773,6 +773,7 @@
             color: #F5F5F0;
             margin-bottom: 1rem;
             line-height: 1.1;
+            text-transform: uppercase;
         }
         .project-card-meta {
             font-size: 0.9rem;
@@ -828,30 +829,8 @@
 
     <!-- Featured Projects Grid -->
     <section style="min-height: 100vh; padding: 10% 0; background-color: var(--color-obsidian);">
-        <div class="projects-grid">
-            <!-- Project 1 -->
-            <div class="project-card">
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=1500" alt="EKAM">
-                </div>
-                <div style="margin-top: 1rem;">
-                    <p class="project-card-meta">Featured Project</p>
-                    <h2 class="project-card-title">EKAM</h2>
-                    <p class="project-card-desc">A transcendent residential experience where bespoke interior design meets architectural harmony. Every detail is meticulously calibrated for profound exclusivity.</p>
-                </div>
-            </div>
-            
-            <!-- Project 2 -->
-            <div class="project-card">
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1500" alt="Anand">
-                </div>
-                <div style="margin-top: 1rem;">
-                    <p class="project-card-meta">Featured Project</p>
-                    <h2 class="project-card-title">Anand</h2>
-                    <p class="project-card-desc">A masterful blend of natural elements and timeless luxury, creating a sanctuary of peace and sophisticated living.</p>
-                </div>
-            </div>
+        <div class="projects-grid" id="projects-grid-container">
+            <!-- Dynamic Projects injected via JS -->
         </div>
     </section>
 
@@ -934,22 +913,34 @@
             });
 
             // SCROLL REVEAL ENGINE
-            document.querySelectorAll('section').forEach((section) => {
-                const elements = section.querySelectorAll('h2, p, .space-image-wrapper, .space-content, .project-card');
-                if(elements.length === 0) return;
-                gsap.to(elements, {
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "top 80%",
-                        toggleActions: "play none none reverse"
-                    },
-                    y: 0,
-                    opacity: 1,
-                    duration: 1.2,
-                    stagger: 0.1,
-                    ease: "power3.out"
+            window.initScrollReveal = function() {
+                document.querySelectorAll('section').forEach((section) => {
+                    const elements = section.querySelectorAll('h2, p, .space-image-wrapper, .space-content, .project-card');
+                    if(elements.length === 0) return;
+                    
+                    // Clear previous triggers if we're re-initializing
+                    ScrollTrigger.getAll().forEach(t => {
+                        if (t.vars.trigger === section && elements[0] && t.vars.targets === elements) {
+                            t.kill();
+                        }
+                    });
+
+                    gsap.to(elements, {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        stagger: 0.1,
+                        ease: "power3.out"
+                    });
                 });
-            });
+            };
+            
+            window.initScrollReveal();
 
             // Navigation State
             const nav = document.querySelector('nav');
@@ -961,8 +952,41 @@
             });
             
             fetchSiteConfig();
+            fetchProjectsData();
         });
         
+        async function fetchProjectsData() {
+            try {
+                const response = await fetch('/api/projects');
+                const resData = await response.json();
+                if (response.ok && resData.success && resData.data) {
+                    const projects = resData.data;
+                    const container = document.getElementById('projects-grid-container');
+                    if (container) {
+                        container.innerHTML = projects.map(p => `
+                            <div class="project-card">
+                                <div class="img-wrapper">
+                                    <img src="${p.image_url}" alt="${p.title}">
+                                </div>
+                                <div style="margin-top: 1rem;">
+                                    <p class="project-card-meta">${p.meta}</p>
+                                    <h2 class="project-card-title">${p.title}</h2>
+                                    <p class="project-card-desc">${p.description}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        // Re-initialize animations for the newly added cards
+                        setTimeout(() => {
+                            if (window.initScrollReveal) window.initScrollReveal();
+                        }, 100);
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch projects.", e);
+            }
+        }
+
         async function fetchSiteConfig() {
             try {
                 const response = await fetch('/api/settings');

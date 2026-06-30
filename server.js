@@ -71,6 +71,42 @@ const server = http.createServer(async (req, res) => {
 
     // --- API ROUTES ---
 
+    // 0. Sheets Download API
+    if (pathname.startsWith('/api/sheets/download') && method === 'GET') {
+        const parts = pathname.split('/');
+        const sheetName = parts[parts.length - 1];
+        const mappedFile = {
+            'boq': 'boq_template.xlsx',
+            'timeline': 'timeline_template.xlsx',
+            'roomwise': 'roomwise_template.xlsx',
+            'accounts': 'accounts_template.xlsx',
+            'jmc': 'jmc_template.xlsx',
+            'vendor_scope': 'vendor_scope_template.xlsx',
+            'generic': 'generic_template.xlsx',
+            'procurement': 'material_procurement.xlsx',
+            'cost_supply': 'cost_comparison_supply.xlsx',
+            'cost_services': 'cost_comparison_services.xlsx',
+            'contract_terms': 'contract_terms_template.xlsx'
+        }[sheetName];
+
+        if (!mappedFile) {
+            return sendJSON(res, 404, { success: false, message: "Sheet template not found" });
+        }
+
+        const filePath = path.join(__dirname, 'data', 'sheets', mappedFile);
+        if (!fs.existsSync(filePath)) {
+            return sendJSON(res, 404, { success: false, message: "Sheet file not generated yet" });
+        }
+
+        res.writeHead(200, {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename=${mappedFile}`
+        });
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+        return;
+    }
+
     // 1. Authentication Login
     if (pathname === '/api/auth/login' && method === 'POST') {
         const body = await getJsonBody(req);
@@ -148,6 +184,64 @@ const server = http.createServer(async (req, res) => {
                 return sendJSON(res, 200, { success: true, message: "Settings updated successfully" });
             } else {
                 return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            }
+        }
+    }
+
+    // 3.5 Projects (GET: Open, POST/PUT/DELETE: Protected)
+    if (pathname === '/api/projects') {
+        if (method === 'GET') {
+            const db = readDB();
+            return sendJSON(res, 200, { success: true, data: db.projects || [] });
+        }
+
+        if (method === 'POST') {
+            if (!checkAuth(req)) return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            const body = await getJsonBody(req);
+            if (!body.title) return sendJSON(res, 400, { success: false, message: "Title is required" });
+            const db = readDB();
+            if (!db.projects) db.projects = [];
+            const newProject = {
+                id: String(Date.now()),
+                title: body.title,
+                meta: body.meta || "Featured Project",
+                description: body.description || "",
+                image_url: body.image_url || "",
+                created_at: new Date().toISOString()
+            };
+            db.projects.push(newProject);
+            if (writeDB(db)) return sendJSON(res, 200, { success: true, data: newProject });
+            else return sendJSON(res, 500, { success: false, message: "Database write failure" });
+        }
+
+        if (method === 'PUT') {
+            if (!checkAuth(req)) return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            const body = await getJsonBody(req);
+            if (!body.id) return sendJSON(res, 400, { success: false, message: "ID is required" });
+            const db = readDB();
+            const index = (db.projects || []).findIndex(p => p.id === body.id);
+            if (index !== -1) {
+                db.projects[index] = { ...db.projects[index], ...body };
+                if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Updated successfully" });
+                else return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            } else {
+                return sendJSON(res, 404, { success: false, message: "Project not found" });
+            }
+        }
+
+        if (method === 'DELETE') {
+            if (!checkAuth(req)) return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            const body = await getJsonBody(req);
+            if (!body.id) return sendJSON(res, 400, { success: false, message: "ID is required" });
+            const db = readDB();
+            if (!db.projects) db.projects = [];
+            const initialLength = db.projects.length;
+            db.projects = db.projects.filter(p => p.id !== body.id);
+            if (db.projects.length !== initialLength) {
+                if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Deleted successfully" });
+                else return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            } else {
+                return sendJSON(res, 404, { success: false, message: "Project not found" });
             }
         }
     }
@@ -248,4 +342,11 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/`);
+    // Run sheet compiler on startup
+    try {
+        const generator = require('./scripts/generate_sheets.js');
+        generator.main().catch(err => console.error("Error generating sheets on boot:", err));
+    } catch (err) {
+        console.error("Failed to load generate_sheets.js:", err);
+    }
 });

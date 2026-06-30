@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 5 Designs - Business Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #F5F5F0;
+            --color-obsidian: #1A1A1A;
+            --color-accent: #C5A059;
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-logo: 'Playfair Display', serif;
+        }
+        
+        body {
+            background-color: #E0E0D5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: var(--font-body);
+            flex-direction: column;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        /* Standard 3.5 x 2 inches */
+        .card {
+            width: 3.5in;
+            height: 2in;
+            background: var(--color-obsidian);
+            color: var(--color-bg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            display: flex;
+        }
+
+        /* FRONT OF CARD */
+        .card-front {
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: var(--color-obsidian);
+            /* Subtle vignette */
+            background-image: radial-gradient(circle at center, rgba(197, 160, 89, 0.05) 0%, transparent 70%);
+        }
+
+        /* Old front styles removed */
+
+        /* BACK OF CARD */
+        .card-back {
+            background: var(--color-bg);
+            color: var(--color-obsidian);
+            flex-direction: column;
+            justify-content: center;
+            padding: 0.35in;
+        }
+
+        .b-logo {
+            position: absolute;
+            top: 0.35in;
+            right: 0.35in;
+            font-family: var(--font-logo);
+            font-size: 1.8rem;
+            color: var(--color-accent);
+            font-style: italic;
+            line-height: 0.8;
+            opacity: 0.8;
+        }
+
+        .person-name {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.05em;
+        }
+        .person-title {
+            font-family: var(--font-body);
+            font-size: 0.45rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--color-accent);
+            margin-top: 2px;
+            margin-bottom: 0.25in;
+        }
+
+        .contact-info {
+            font-size: 0.45rem;
+            line-height: 1.6;
+            letter-spacing: 0.05em;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .c-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .c-icon {
+            color: var(--color-accent);
+            width: 12px;
+            font-style: italic;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.55rem;
+        }
+
+        .accent-line {
+            width: 25px;
+            height: 1px;
+            background: var(--color-accent);
+            margin-bottom: 0.15in;
+        }
+
+        .print-controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
+        }
+
+        .print-btn {
+            background: var(--color-obsidian);
+            color: var(--color-accent);
+            border: 1px solid var(--color-accent);
+            padding: 15px 30px;
+            font-family: var(--font-body);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .print-btn:hover {
+            background: var(--color-accent);
+            color: var(--color-obsidian);
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+                gap: 0.5in;
+            }
+            .card {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+            .print-controls {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Controls -->
+    <div class="print-controls">
+        <button class="print-btn" onclick="window.print()" title="Use this to Save as PDF or Print">
+            <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5V3h14v5zm-2-3H7v1h10V5zm4 6v8h-4v4H7v-4H3v-8c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2zm-6 8v-2H9v2h6zm-6-4h6v-2H9v2zm8-5.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5.22.5.5.5.5-.22.5-.5z"/></svg>
+            Print / Save to PDF
+        </button>
+    </div>
+
+    <!-- Front -->
+    <div class="card card-front">
+        <h1 style="white-space: nowrap; font-size: 2.2rem; font-style: italic; color: var(--color-bg); margin: 0; font-weight: 400; font-family: var(--font-display); line-height: 1; text-align: center;">
+            The <span style="font-family: var(--font-logo); font-size: 1.5em; color: var(--color-accent); font-weight: 400; font-style: italic;">5</span> Designs
+        </h1>
+    </div>
+
+    <!-- Back -->
+    <div class="card card-back" contenteditable="true">
+        <div class="b-logo">5</div>
+        <div class="person-name">Evelyn Vance</div>
+        <div class="person-title">Principal Architect</div>
+        <div class="accent-line"></div>
+        <div class="contact-info">
+            <div class="c-row">
+                <span class="c-icon">T.</span> +1 800 555 0199
+            </div>
+            <div class="c-row">
+                <span class="c-icon">E.</span> evelyn@the5designs.com
+            </div>
+            <div class="c-row">
+                <span class="c-icon">W.</span> www.the5designs.com
+            </div>
+            <div class="c-row">
+                <span class="c-icon">A.</span> 123 Obsidian Way, Design District, NY
+            </div>
+        </div>
+    </div>
+</body>
+</html>

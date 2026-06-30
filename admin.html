@@ -35,6 +35,10 @@
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     Diaries & Vlogs
                 </a>
+                <a href="#" onclick="showSection('sheets')" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Business Sheets
+                </a>
                 <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     Site Settings
@@ -89,23 +93,10 @@
                 <section id="projects-section" class="hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-medium">Manage Projects</h3>
-                        <button class="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all">+ New Project</button>
+                        <button onclick="openProjectModal()" class="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-all">+ New Project</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Project Card Example -->
-                        <div class="card p-4 space-y-4">
-                            <div class="h-48 bg-gray-100 rounded-md overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d" class="w-full h-full object-cover opacity-60">
-                            </div>
-                            <div>
-                                <h4 class="font-medium">The Obsidian Suite</h4>
-                                <p class="text-xs text-gray-500 mt-1">Architecture / Interior Design</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="flex-1 border border-gray-200 py-2 rounded text-xs hover:bg-gray-50">Edit</button>
-                                <button class="flex-1 border border-red-100 text-red-500 py-2 rounded text-xs hover:bg-red-50">Delete</button>
-                            </div>
-                        </div>
+                    <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic projects -->
                     </div>
                 </section>
 
@@ -247,6 +238,51 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- SHEETS SECTION -->
+                <section id="sheets-section" class="hidden space-y-6">
+                    <div class="card p-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100 pb-4 mb-6 gap-4">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900 font-display italic">Branded Sheet Console</h3>
+                                <p class="text-xs text-gray-400 mt-1">Manage project estimates, schedules, measurement certificates, accounts, and legal terms</p>
+                            </div>
+                            <button onclick="downloadSelectedSheet()" class="bg-[#C5A059] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black transition-all flex items-center shadow-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Download Excel Template
+                            </button>
+                        </div>
+
+                        <!-- Sheets Sub Tabs -->
+                        <div class="flex flex-wrap gap-2 border-b border-gray-100 pb-3 mb-6" id="sheets-tab-bar">
+                            <button onclick="switchPreviewTab('boq')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-[#1A1A1A] text-[#F5F5F0]">1. BOQ (Bill of Quantities)</button>
+                            <button onclick="switchPreviewTab('timeline')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">2. Timeline & Sourcing</button>
+                            <button onclick="switchPreviewTab('roomwise')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">3. Roomwise Checklist</button>
+                            <button onclick="switchPreviewTab('accounts')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">4. Project Accounts</button>
+                            <button onclick="switchPreviewTab('jmc')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">5. JMC Certificate</button>
+                            <button onclick="switchPreviewTab('vendor_scope')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">6. Standard Vendor Scope</button>
+                            <button onclick="switchPreviewTab('generic')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">7. Generic Template</button>
+                            <button onclick="switchPreviewTab('procurement')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">8. Material Procurement</button>
+                            <button onclick="switchPreviewTab('cost_supply')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">9. Supply Cost Comparison</button>
+                            <button onclick="switchPreviewTab('cost_services')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">10. Services Cost Comparison</button>
+                            <button onclick="switchPreviewTab('contract_terms')" class="sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100">11. Legal Contract Terms</button>
+                        </div>
+
+                        <!-- Sheet Viewport Frame -->
+                        <div class="overflow-x-auto rounded-lg border border-gray-200 bg-[#F5F5F0] p-4 shadow-inner" style="min-height: 400px; max-height: 600px; overflow-y: auto;">
+                            <!-- Branding Spreadsheet Header Block -->
+                            <div class="w-full bg-[#1A1A1A] text-center py-4 rounded-t-md shadow-sm select-none mb-3">
+                                <h1 class="font-display italic text-2xl text-[#C5A059] tracking-wider">THE 5 DESIGNS</h1>
+                                <p class="text-[10px] tracking-[0.4em] uppercase text-[#F5F5F0] mt-1" id="preview-sheet-title">Bill of Quantities (BOQ)</p>
+                            </div>
+                            
+                            <!-- Preview Grid Content -->
+                            <div class="bg-white rounded-b-md shadow-sm border border-gray-100 overflow-hidden" id="preview-table-container">
+                                <!-- Dynamic styled tables injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -334,7 +370,107 @@
             status.classList.add('text-green-600');
             
             fetchLeads();
+            fetchProjects();
             fetchSettings();
+            renderSheetPreview('boq'); // Load sheets preview
+        }
+
+        let projectsData = [];
+
+        async function fetchProjects() {
+            try {
+                const res = await fetch('/api/projects');
+                const data = await res.json();
+                if (data.success) {
+                    projectsData = data.data;
+                    renderProjects();
+                }
+            } catch (e) { console.error("Error fetching projects", e); }
+        }
+
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            if (projectsData.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">No projects found.</div>`;
+                return;
+            }
+            grid.innerHTML = projectsData.map(p => `
+                <div class="card p-4 space-y-4 flex flex-col">
+                    <div class="h-48 bg-gray-100 rounded-md overflow-hidden relative">
+                        ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover">` : `<div class="flex items-center justify-center h-full text-gray-400 text-xs">No Image</div>`}
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-lg">${p.title}</h4>
+                        <p class="text-xs text-[#C5A059] uppercase tracking-wider mt-1">${p.meta}</p>
+                        <p class="text-xs text-gray-500 mt-2 line-clamp-3">${p.description}</p>
+                    </div>
+                    <div class="flex space-x-2 pt-2 border-t border-gray-100">
+                        <button onclick="openProjectModal('${p.id}')" class="flex-1 border border-gray-200 py-2 rounded text-xs hover:bg-gray-50">Edit</button>
+                        <button onclick="deleteProject('${p.id}')" class="flex-1 border border-red-100 text-red-500 py-2 rounded text-xs hover:bg-red-50">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openProjectModal(id = null) {
+            const modal = document.getElementById('project-modal');
+            const form = document.getElementById('project-form');
+            form.reset();
+            document.getElementById('project-id').value = '';
+            
+            if (id) {
+                const p = projectsData.find(x => x.id === id);
+                if (p) {
+                    document.getElementById('project-id').value = p.id;
+                    document.getElementById('project-title').value = p.title;
+                    document.getElementById('project-meta').value = p.meta;
+                    document.getElementById('project-desc').value = p.description;
+                    document.getElementById('project-image').value = p.image_url;
+                }
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        async function saveProject(e) {
+            e.preventDefault();
+            const id = document.getElementById('project-id').value;
+            const payload = {
+                title: document.getElementById('project-title').value,
+                meta: document.getElementById('project-meta').value,
+                description: document.getElementById('project-desc').value,
+                image_url: document.getElementById('project-image').value
+            };
+            if (id) payload.id = id;
+
+            try {
+                const res = await fetch('/api/projects', {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    closeProjectModal();
+                    fetchProjects();
+                } else {
+                    alert("Failed to save project");
+                }
+            } catch(err) { console.error(err); alert("Error saving"); }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm("Delete this project?")) return;
+            try {
+                const res = await fetch('/api/projects', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+                    body: JSON.stringify({ id })
+                });
+                if (res.ok) fetchProjects();
+            } catch(e) { console.error(e); }
         }
 
         async function fetchLeads() {
@@ -567,6 +703,7 @@
             status.classList.remove('text-red-500');
             status.classList.add('text-amber-600');
             fetchLeads();
+            renderSheetPreview('boq'); // Load sheets preview in demo mode
         }
 
         function showToast() {
@@ -582,6 +719,470 @@
             location.reload();
         }
 
+        // Sheets preview rendering logic
+        let activeSheetTab = 'boq';
+
+        function switchPreviewTab(tabName) {
+            activeSheetTab = tabName;
+            
+            // Toggle active classes on tab buttons
+            document.querySelectorAll('.sheet-tab').forEach(btn => {
+                btn.className = "sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-gray-50 text-gray-600 hover:bg-gray-100";
+            });
+            
+            // Find clicked button by matching parameter in onclick attribute
+            const clickedBtn = Array.from(document.querySelectorAll('.sheet-tab')).find(btn => btn.outerHTML.includes(`'${tabName}'`));
+            if (clickedBtn) {
+                clickedBtn.className = "sheet-tab px-3 py-1.5 text-xs font-semibold rounded bg-[#1A1A1A] text-[#F5F5F0]";
+            }
+            
+            renderSheetPreview(tabName);
+        }
+
+        function downloadSelectedSheet() {
+            window.location.href = `/api/sheets/download/${activeSheetTab}`;
+        }
+
+        const PREVIEW_DATA = {
+            'boq': {
+                title: 'BILL OF QUANTITIES (BOQ)',
+                headers: ['Item No', 'Space/Area', 'Description of Works', 'Material Specifications', 'Qty', 'Unit', 'Rate (INR)', 'Amount (INR)', 'Remarks'],
+                rows: [
+                    { isSubhead: true, values: ['1.0', 'CIVIL & DEMOLITION', '', '', '', '', '', '', ''] },
+                    { values: ['1.1', 'Living Room', 'Dismantling of existing floor tile and IPS base preparation', 'Manual chipping, debris removal included', '450', 'Sft', '45.00', '20,250.00', 'To base concrete level'] },
+                    { values: ['1.2', 'Kitchen & Bath', 'Waterproofing of wet areas with dual layer chemical coat', 'Dr. Fixit waterproofing compound + cement slurry coating', '2', 'LS', '35,000.00', '70,000.00', 'With 5 yr warranty'] },
+                    { isSubhead: true, values: ['2.0', 'FALSE CEILING & ELECTRICAL', '', '', '', '', '', '', ''] },
+                    { values: ['2.1', 'All Areas', 'Gypsum board false ceiling on G.I. suspension grid', 'Saint Gobain Gypsum, perimeter channel & joint tapes', '1,800', 'Sft', '115.00', '2,07,000.00', 'COB light grooves as per drawing'] },
+                    { values: ['2.2', 'All Areas', 'Concealed wiring, electrical conduits and modular boxes', 'Finolex FRLS wires, Polycab PVC conduits, metal boxes', '1', 'LS', '1,45,000.00', '1,45,000.00', 'Switches in separate supply scope'] },
+                    { isSubhead: true, values: ['3.0', 'WOODWORK & PANELING', '', '', '', '', '', '', ''] },
+                    { values: ['3.1', 'Master Bed', 'Custom wardrobe with sliding doors and laminate carcass', 'Greenply MR plywood, 1mm Century veneer exterior, Hettich channels', '140', 'Sft', '1,950.00', '2,73,000.00', 'Handle-less profile design'] },
+                    { values: ['3.2', 'Living Area', 'TV Backing wall paneling with veneer & metallic profile inlays', 'HDHMR board core, natural walnut veneer, SS Gold T-profiles', '120', 'Sft', '850.00', '1,02,000.00', 'Walnut polish finish'] },
+                    { isSubhead: true, values: ['4.0', 'PAINTING & FINISHES', '', '', '', '', '', '', ''] },
+                    { values: ['4.1', 'All Areas', 'Wall putty preparation, primer & premium emulsion paint', 'Asian Paints Royale Luxury Emulsion, 2 coats putty, 2 coats paint', '5,600', 'Sft', '48.00', '2,68,800.00', 'Colors as per moodboard'] },
+                    { isTotal: true, values: ['GRAND TOTAL ESTIMATE', '', '', '', '', '', '', '10,86,050.00', ''] }
+                ]
+            },
+            'timeline': {
+                title: 'PHASE-BASED PROJECT TIMELINE & MATERIAL COMMITMENTS',
+                headers: ['WBS', 'Phase / Sub-Phase / Work Task', 'Responsible', 'Dependencies (Client/Team)', 'Sourcing Material Commitment', 'Start', 'End', 'Days', 'Status', 'Progress', 'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12'],
+                rows: [
+                    { isSubhead: true, values: ['1.0', 'PHASE 1: DESIGN & APPROVALS', '', '', '', '2026-07-01', '2026-07-15', '14', 'In Progress', '60%', '■', '■', '', '', '', '', '', '', '', '', '', ''] },
+                    { values: ['1.1', 'Sub-Phase: 3D Layout & Space Planning', 'Designer', 'Client brief approved', 'N/A', '2026-07-01', '2026-07-08', '7', 'Completed', '100%', '■', '', '', '', '', '', '', '', '', '', '', ''] },
+                    { values: ['1.2', 'Sub-Phase: Material Specifications Selection', 'Sourcing', 'Client 3D sign-off', 'Marble catalogs, sample boards', '2026-07-09', '2026-07-15', '6', 'In Progress', '30%', '', '■', '', '', '', '', '', '', '', '', '', ''] },
+                    { isSubhead: true, values: ['2.0', 'PHASE 2: CIVIL, WATERPROOFING & MEP', '', '', '', '2026-07-16', '2026-08-10', '25', 'Not Started', '0%', '', '', '■', '■', '■', '■', '', '', '', '', '', ''] },
+                    { values: ['2.1', 'Sub-Phase: Civil Demolition & Layout', 'Civil Cont.', 'Society NOC & layout finalized', 'N/A', '2026-07-16', '2026-07-22', '7', 'Not Started', '0%', '', '', '■', '■', '', '', '', '', '', '', '', ''] },
+                    { values: ['2.2', 'Sub-Phase: Plumbing & Electrical Rough-Ins', 'MEP Spec.', 'Civil layouts completed', 'Pipes & Cables committed: 07-20', '2026-07-23', '2026-08-02', '10', 'Not Started', '0%', '', '', '', '■', '■', '', '', '', '', '', '', ''] },
+                    { values: ['2.3', 'Sub-Phase: Waterproofing & Floor IPS', 'Civil Cont.', 'Plumbing tested', 'Chemical base committed: 07-22', '2026-08-03', '2026-08-10', '7', 'Not Started', '0%', '', '', '', '', '■', '■', '', '', '', '', '', ''] },
+                    { isSubhead: true, values: ['3.0', 'PHASE 3: CEILING, JOINERY & SURFACE FINISH', '', '', '', '2026-08-11', '2026-09-22', '42', 'Not Started', '0%', '', '', '', '', '', '', '■', '■', '■', '■', '■', '■'] },
+                    { values: ['3.1', 'Sub-Phase: Gypsum False Ceiling Suspension', 'Ceiling Cont.', 'MEP conduit check completed', 'Saint Gobain Gypsum committed: 08-08', '2026-08-11', '2026-08-20', '9', 'Not Started', '0%', '', '', '', '', '', '', '■', '■', '', '', '', ''] },
+                    { values: ['3.2', 'Sub-Phase: Wardrobes & Wall Paneling Carcass', 'Carpenters', 'Civil curing & ceilings complete', 'Greenply MR Plywood committed: 08-15', '2026-08-21', '2026-09-08', '18', 'Not Started', '0%', '', '', '', '', '', '', '', '■', '■', '■', '', ''] },
+                    { values: ['3.3', 'Sub-Phase: Wall Primer & Veneer Polish', 'Painters', 'Carpentry carcass finished', 'Paints & Melamine committed: 09-05', '2026-09-09', '2026-09-18', '9', 'Not Started', '0%', '', '', '', '', '', '', '', '', '', '■', '■', ''] },
+                    { values: ['3.4', 'Sub-Phase: Electrical Fixtures & Handover', 'PM/Sourcing', 'Final paint coats completed', 'COB lights & switches committed: 09-10', '2026-09-19', '2026-09-22', '4', 'Not Started', '0%', '', '', '', '', '', '', '', '', '', '', '', '■'] }
+                ]
+            },
+            'roomwise': {
+                title: 'ROOMWISE QUALITY CONTROL CHECKLIST',
+                headers: ['Done', 'Room / Space', 'Structure Section', 'Checklist Pointer / Task Description', 'Assigned Contractor', 'Start Date', 'End Date', 'QC Status', 'QC Remarks'],
+                rows: [
+                    { isRoom: true, values: ['LIVING ROOM', '', '', '', '', '', '', '', ''] },
+                    { isSection: true, values: ['  ↳ CEILING', '', '', '', '', '', '', '', ''] },
+                    { values: ['[x]', 'Living Room', 'Ceiling', 'Check layout alignment of GI framing suspension', 'Ceiling Specialist', '2026-08-11', '2026-08-13', 'Approved', 'Aligned as per drawings'] },
+                    { values: ['[x]', 'Living Room', 'Ceiling', 'Confirm conduit placement for magnetic track lights', 'Electrical Contractor', '2026-08-12', '2026-08-14', 'Approved', 'Wires checked & tagged'] },
+                    { values: ['[ ]', 'Living Room', 'Ceiling', 'Verify gypsum board fixing, jointing & plaster tape', 'Ceiling Specialist', '2026-08-15', '2026-08-18', 'Pending', 'Taping completed'] },
+                    { isSection: true, values: ['  ↳ FLOORING', '', '', '', '', '', '', '', ''] },
+                    { values: ['[x]', 'Living Room', 'Flooring', 'Subfloor cleaning and dual-layer waterproofing IPS', 'Civil Contractor', '2026-08-18', '2026-08-20', 'Approved', 'Pond test successful'] },
+                    { values: ['[ ]', 'Living Room', 'Flooring', 'Dry layout review of Italian marble slabs (vein matching)', 'Stone Mason', '2026-08-21', '2026-08-23', 'Rework', 'Re-align slab #4 & #5'] },
+                    { values: ['[ ]', 'Living Room', 'Flooring', 'Final marble laying, grouting and epoxy sealing', 'Stone Mason', '2026-08-24', '2026-08-30', 'Not Started', '-'] },
+                    { isSection: true, values: ['  ↳ ELEVATION NORTH', '', '', '', '', '', '', '', ''] },
+                    { values: ['[ ]', 'Living Room', 'Elevation North', 'Plywood framework marking & HDHMR support backing', 'Carpentry Team', '2026-09-01', '2026-09-03', 'Pending', 'Ready for veneer'] },
+                    { values: ['[ ]', 'Living Room', 'Elevation North', 'Walnut veneer pasting & SS gold inlay groove fixing', 'Carpentry Team', '2026-09-04', '2026-09-08', 'Not Started', '-'] },
+                    { isSection: true, values: ['  ↳ ELEVATION SOUTH', '', '', '', '', '', '', '', ''] },
+                    { values: ['[ ]', 'Living Room', 'Elevation South', 'Putty coats application & micro-cement base prep', 'Painting Team', '2026-09-09', '2026-09-11', 'Not Started', '-'] },
+                    { isSection: true, values: ['  ↳ ELEVATION EAST', '', '', '', '', '', '', '', ''] },
+                    { values: ['[x]', 'Living Room', 'Elevation East', 'Wiring conduits and boxes for TV console backboard', 'Electrical Contractor', '2026-09-02', '2026-09-03', 'Approved', 'Wires labeled'] },
+                    { isSection: true, values: ['  ↳ ELEVATION WEST', '', '', '', '', '', '', '', ''] },
+                    { values: ['[ ]', 'Living Room', 'Elevation West', 'Wall lamp wiring points', 'Electrical Contractor', '2026-09-02', '2026-09-03', 'Not Started', '-'] },
+                    
+                    { isRoom: true, values: ['MASTER BEDROOM', '', '', '', '', '', '', '', ''] },
+                    { isSection: true, values: ['  ↳ CEILING', '', '', '', '', '', '', '', ''] },
+                    { values: ['[ ]', 'Master Bed', 'Ceiling', 'G.I. ceiling frame suspension & level check', 'Ceiling Specialist', '2026-08-12', '2026-08-14', 'Pending', '-'] }
+                ]
+            },
+            'accounts': {
+                title: 'PROJECT FINANCIAL ACCOUNTS',
+                isAccounts: true, // Special rendering for stacked tables
+                clientHeaders: ['Invoice No', 'Invoice Date', 'Stage / Description', 'Net Amount (INR)', 'GST (18%)', 'Total (INR)', 'Amount Received', 'Outstanding Bal', 'Date Received', 'Payment Mode'],
+                clientRows: [
+                    { values: ['INV-01', '2026-06-10', 'Design Retainer & Token Fee (10%)', '₹1,50,000.00', '₹27,000.00', '₹1,77,000.00', '₹1,77,000.00', '₹0.00', '2026-06-12', 'NEFT'] },
+                    { values: ['INV-02', '2026-07-02', 'Mobilization Advance (20%)', '₹3,00,000.00', '₹54,000.00', '₹3,54,000.00', '₹3,54,000.00', '₹0.00', '2026-07-04', 'RTGS'] },
+                    { values: ['INV-03', '2026-08-15', 'Civil, Plaster & MEP Stage (25%)', '₹3,75,000.00', '₹67,500.00', '₹4,42,500.00', '₹0.00', '₹4,42,500.00', '-', '-'] },
+                    { isTotal: true, values: ['TOTALS', '', '', '₹8,25,000.00', '₹1,48,500.00', '₹9,73,500.00', '₹5,31,000.00', '₹4,42,500.00', '', ''] }
+                ],
+                vendorHeaders: ['Vendor / Contractor Name', 'Work Category', 'Bill Ref Code', 'Bill Amount (INR)', 'Paid Amount (INR)', 'Balance Outstanding', 'Payment Due Date', 'Status'],
+                vendorRows: [
+                    { values: ['Apex Woodwork Corp', 'Carpentry & Wardrobes', 'APX-W-01', '₹2,50,000.00', '₹1,50,000.00', '₹1,00,000.00', '2026-08-25', 'Partially Paid'] },
+                    { values: ['Deco Stone Importers', 'Italian Marble Supply', 'DEC-ST-11', '₹3,20,000.00', '₹3,20,000.00', '₹0.00', '2026-07-15', 'Fully Paid'] },
+                    { values: ['Shree Electricals', 'Wiring & Conduits', 'SHR-EL-04', '₹85,000.00', '₹40,000.00', '₹45,000.00', '2026-08-02', 'Partially Paid'] },
+                    { values: ['Asian Paints Depot', 'Emulsion & Putty Supply', 'APD-9922', '₹45,000.00', '₹45,000.00', '₹0.00', '2026-08-10', 'Fully Paid'] },
+                    { isTotal: true, values: ['TOTALS', '', '', '₹7,00,000.00', '₹5,55,000.00', '₹1,45,000.00', '', ''] }
+                ]
+            },
+            'jmc': {
+                title: 'JOINT MEASUREMENT CERTIFICATE (JMC)',
+                headers: ['S.No.', 'Space', 'Description', 'Unit (Sft/Rft)', 'Multipliers', 'Length (ft)', 'Width (ft)', 'Height/Depth (ft)', 'Total', 'Status', 'QC', 'Remarks'],
+                rows: [
+                    { values: ['1', 'Living Room', 'Veneer Paneling north wall (Sft)', 'Sft', '1.0', '15.50', '9.25', '0.00', '143.38', 'Measured', 'Approved', 'Checked on site'] },
+                    { values: ['2', 'Living Room', 'SS Gold inlay T-profiles (Rft)', 'Rft', '4.0', '9.25', '0.00', '0.00', '37.00', 'Measured', 'Approved', 'Total 4 vertical runs'] },
+                    { values: ['3', 'Kitchen', 'Quartz Countertop slab length', 'Sft', '1.0', '12.00', '2.25', '0.00', '27.00', 'Measured', 'Approved', 'Profile edge polished'] },
+                    { values: ['4', 'Master Bed', 'Gypsum ceiling step molding', 'Rft', '1.0', '64.00', '0.00', '0.00', '64.00', 'Estimated', 'Pending', 'To be measured post drywall'] }
+                ],
+                isJMC: true // Render signature block at bottom
+            },
+            'vendor_scope': {
+                title: 'STANDARD VENDOR SCOPE OF WORK',
+                headers: ['S.No.', 'Scope Deliverable / Segment', 'Execution Details & Material Specifications', 'Material Provision (Client vs Vendor)', 'Quality Standards & Tolerance Levels', 'QC Review Protocol'],
+                rows: [
+                    { values: ['1', 'Site Verification', 'Marking of coordinates, level verification using digital laser levels before cutting/fabrication.', 'Vendor scope (tools & marking accessories)', 'Level variations should be zero (+/- 1mm max)', 'Laser level verification by Site Engineer'] },
+                    { values: ['2', 'Material Storage', 'Organizing and stack-housing raw sheets/planks/paints on dry wooden pallets, protected from damp.', 'Company provides room; Vendor handles sorting', 'Zero moisture contact. Stack height max 6 feet', 'Daily stack moisture check'] },
+                    { values: ['3', 'Surface Preparation', 'Sanding, base cleaning, minor crack filling, joint packing, primer coating as specified in drawing details.', 'Material by Company; labor/tools by Vendor', 'Zero loose dust particles before overlay', 'Touch test & dust tape residue test'] },
+                    { values: ['4', 'Core Execution & Fittings', 'Assembling elements, joint paste routing, hardware fittings (soft-close runners/channels, profiles).', 'Material by Company; tools & labor by Vendor', 'Bostik glue adhesives, Hettich channels alignment +/- 0.5mm', 'Load/sliding test: 20 repetitions'] },
+                    { values: ['5', 'Housekeeping & Handover', 'Debris sorting, bagging, site vacuuming, surface cleaning, and joint snag clearance.', 'Vendor provides bags; Company manages dump disposal', 'Zero dust, glue smudges, or scratches on finishes', 'Visual snag walk-through'] }
+                ],
+                isVendorScope: true // Render editable inputs at top
+            },
+            'generic': {
+                title: '[CUSTOM SHEET HEADING GOES HERE]',
+                headers: ['S.No.', 'Item Name', 'Detailed Description', 'Category', 'Qty', 'Unit', 'Rate (INR)', 'Total (INR)', 'Status', 'Remarks'],
+                rows: [
+                    { values: ['1', '[Sample Item]', '[Click download and type inside Excel to use this blank layout]', '', '0', 'Nos', '₹0.00', '₹0.00', '', ''] },
+                    { values: ['2', '', '', '', '0', '', '₹0.00', '₹0.00', '', ''] },
+                    { values: ['3', '', '', '', '0', '', '₹0.00', '₹0.00', '', ''] },
+                    { values: ['4', '', '', '', '0', '', '₹0.00', '₹0.00', '', ''] },
+                    { isTotal: true, values: ['GRAND TOTAL', '', '', '', '', '', '', '₹0.00', ''] }
+                ],
+                isGeneric: true // Render editable heading at top
+            },
+            'procurement': {
+                title: 'PROJECT MATERIAL PROCUREMENT TRACKER',
+                headers: ['Item No', 'Space/Area', 'Material Name', 'Brand/Mfr', 'Spec/Grade/Size', 'Qty Req', 'Unit', 'Procurement Stage', 'Lead Time', 'Committed Delivery', 'Vendor Name', 'Invoice Ref', 'Status / Remarks'],
+                rows: [
+                    { values: ['1', 'Living Room', 'Italian Marble Slabs', 'Classic Marble Co', 'Dyna Collection, 18mm thickness', '450', 'Sft', 'Delivered', '5 Days', '2026-07-20', 'Deco Stone Imports', 'DEC-ST-11', 'Slabs stacked in Room 1'] },
+                    { values: ['2', 'Kitchen & Bath', 'Waterproofing base coat', 'Dr. Fixit', 'Fastflex 2K Dual Component', '6', 'Cans', 'Delivered', '2 Days', '2026-07-22', 'Apex Paints Depot', 'APD-9922', 'Used in wet areas'] },
+                    { values: ['3', 'All Areas', 'Gypsum Board panels', 'Saint-Gobain', 'Standard Gypsum, 12mm thickness', '65', 'Nos', 'Ordered', '3 Days', '2026-08-08', 'BuildMart Agencies', 'BM-2026-09', 'Payment cleared'] },
+                    { values: ['4', 'All Areas', 'FRLS Copper Wiring', 'Finolex', '1.5 Sqmm & 2.5 Sqmm multi-strand', '10', 'Coils', 'Ordered', '4 Days', '2026-08-02', 'Shree Electricals', 'SHR-EL-04', 'Scheduled with conduits'] },
+                    { values: ['5', 'Master Bed', 'Marine Grade Plywood', 'CenturyPly', 'Club Prime MR, 19mm', '45', 'Sheets', 'In Transit', '7 Days', '2026-08-15', 'Century Depot', 'CD-8877', 'On road, ETA 2 days'] }
+                ]
+            },
+            'cost_supply': {
+                title: 'MATERIAL & SUPPLY COST COMPARISON (VENDOR QUOTES)',
+                headers: ['S.No.', 'Material Item', 'Specification', 'Qty', 'Unit', 'Vendor A Rate', 'Vendor A Total', 'Vendor B Rate', 'Vendor B Total', 'Vendor C Rate', 'Vendor C Total', 'Selected Vendor', 'Budget (INR)', 'Variance vs Budget', 'Remarks'],
+                rows: [
+                    { values: ['1', 'Italian Marble Dyna', '18mm slab selections', '450', 'Sft', '₹380.00', '₹1,71,000.00', '₹350.00', '₹1,57,500.00', '₹410.00', '₹1,84,500.00', 'Vendor B', '₹1,65,000.00', '-₹7,500.00', 'Vendor B chosen for vein match'] },
+                    { values: ['2', 'Marine Plywood 19mm', 'Greenply Club MR grade', '60', 'Sheets', '₹2,100.00', '₹1,26,000.00', '₹2,15.00', '₹1,29,000.00', '₹2,200.00', '₹1,32,000.00', 'Vendor A', '₹1,30,000.00', '-₹4,000.00', 'Bulk discount from Vendor A'] },
+                    { values: ['3', 'Quartz Kitchen Counter', 'White Quartz slab 20mm', '3', 'Nos', '₹18,500.00', '₹55,500.00', '₹19,000.00', '₹57,000.00', '₹18,000.00', '₹54,000.00', 'Vendor C', '₹60,000.00', '-₹6,000.00', 'Vendor C matches spec best'] }
+                ]
+            },
+            'cost_services': {
+                title: 'SERVICES & CONTRACTING COST COMPARISON (CONTRACTOR QUOTES)',
+                headers: ['S.No.', 'Service Description', 'Category', 'Qty', 'Unit', 'Contr A Rate', 'Contr A Total', 'Contr B Rate', 'Contr B Total', 'Contr C Rate', 'Contr C Total', 'Selected Contr', 'Budget (INR)', 'Variance vs Budget', 'Remarks'],
+                rows: [
+                    { values: ['1', 'Wardrobe Joinery Labor', 'Carpentry', '140', 'Sft', '₹450.00', '₹63,000.00', '₹480.00', '₹67,200.00', '₹430.00', '₹60,200.00', 'Contr A', '₹65,000.00', '-₹2,000.00', 'Contr A has better finishing crew'] },
+                    { values: ['2', 'Wall Texture Painting', 'Painting', '5,400', 'Sft', '₹12.00', '₹64,800.00', '₹10.00', '₹54,000.00', '₹15.00', '₹81,000.00', 'Contr B', '₹60,000.00', '-₹6,000.00', 'Contr B is specialized in texture'] },
+                    { values: ['3', 'Italian Marble Polish', 'Flooring', '450', 'Sft', '₹85.00', '₹38,250.00', '₹90.00', '₹40,500.00', '₹80.00', '₹36,000.00', 'Contr C', '₹40,000.00', '-₹4,000.00', 'Contr C offers 7-step mirror polish'] }
+                ]
+            },
+            'contract_terms': {
+                title: 'WORK CONTRACT STANDARD TERMS & CONDITIONS',
+                headers: ['Clause No.', 'Clause Heading', 'Agreement Terms & Execution Specifications'],
+                rows: [
+                    { values: ['1.0', 'Scope of Works', 'The scope of works is bounded strictly by the Bill of Quantities (BOQ) and authorized GFC drawings. Any variations, revisions, or additions requested verbally by the Client or Contractor will only be binding once processed and signed via a Joint Measurement Certificate (JMC) and a formal written Variation Order (VO) stating rates and impact on the timeline.'] },
+                    { values: ['2.0', 'Measurement & Billing', 'All progress bills raised by contractors and invoices raised to the client shall be measured jointly on-site based on actual net executed quantities. The billing calculations will strictly follow the measurement principles detailed in the JMC sheet (using Length x Width x Depth multipliers). Deductions for cut-outs and voids larger than 4 Sft will be enforced.'] },
+                    { values: ['3.0', 'Delay Penalties', 'Time is of the essence for this contract. If the Service Provider / Contractor fails to achieve the milestones outlined in the Project Timeline sheet due to reasons solely attributable to them, a delay penalty (Liquidated Damages) of 0.5% of the total pending work value per week of delay shall be levied, up to a maximum cap of 5% of the total contract value.'] },
+                    { values: ['4.0', 'Quality & Defect Liability', 'The Contractor guarantees that all materials and workmanship supplied match the standards outlined in the Vendor Scope of Work. A Defect Liability Period (DLP) of 12 (Twelve) calendar months from the date of final handover is applicable. Any structural defects, alignments issues, paint peeling, or hardware malfunction during this period shall be rectified by the Contractor at zero cost to the Client.'] },
+                    { values: ['5.0', 'Dispute Resolution', 'All disputes, claims, or differences arising out of or in connection with this work contract shall first be attempted to be resolved amicably through mediation between the Lead Designer, Contractor, and Client within 15 days. If unresolved, disputes shall be referred to arbitration under the Arbitration and Conciliation Act, 1996.'] },
+                    { values: ['6.0', 'Judicial Jurisdiction', 'This Contract is governed by and shall be construed in accordance with the laws of India. All legal actions, litigation, or judicial proceedings arising out of or related to this project, including claims on billing, measurements, or breaches, shall be subject to the exclusive jurisdiction of the competent courts located in Hyderabad, Telangana, India.'] }
+                ]
+            }
+        };
+
+        function renderSheetPreview(sheetName) {
+            const container = document.getElementById('preview-table-container');
+            const data = PREVIEW_DATA[sheetName];
+            
+            if (!data) return;
+
+            document.getElementById('preview-sheet-title').innerText = data.title;
+            
+            if (data.isAccounts) {
+                // Stacked Client Billing & Vendor Disbursements
+                let html = `
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 font-bold text-sm text-[#1A1A1A]">CLIENT BILLING SUMMARY</div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-[#1A1A1A]">
+                                <tr>
+                                    ${data.clientHeaders.map(h => `<th class="px-3 py-2 text-center text-xs font-semibold text-[#F5F5F0] border border-gray-700">${h}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100 text-xs">
+                                ${data.clientRows.map(row => {
+                                    if (row.isTotal) {
+                                        return `
+                                            <tr class="bg-[#F5F5F0] font-bold">
+                                                <td colspan="3" class="px-3 py-2 text-right border border-gray-200">TOTALS</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[3]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[4]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[5]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[6]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200 bg-[#C5A059] text-white">${row.values[7]}</td>
+                                                <td class="px-3 py-2 text-center border border-gray-200">-</td>
+                                                <td class="px-3 py-2 text-center border border-gray-200">-</td>
+                                            </tr>
+                                        `;
+                                    }
+                                    return `
+                                        <tr>
+                                            ${row.values.map((v, i) => `
+                                                <td class="px-3 py-2 border border-gray-100 ${i === 0 || i === 1 || i === 8 || i === 9 ? 'text-center' : (i >= 3 && i <= 7 ? 'text-right font-medium' : 'text-left')}">
+                                                    ${v}
+                                                </td>
+                                            `).join('')}
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="p-4 bg-gray-50 border-t border-b border-gray-200 font-bold text-sm text-[#1A1A1A] mt-6">CONTRACTOR & VENDOR DISBURSEMENTS</div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-[#1A1A1A]">
+                                <tr>
+                                    ${data.vendorHeaders.map(h => `<th class="px-3 py-2 text-center text-xs font-semibold text-[#F5F5F0] border border-gray-700">${h}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-100 text-xs">
+                                ${data.vendorRows.map(row => {
+                                    if (row.isTotal) {
+                                        return `
+                                            <tr class="bg-[#F5F5F0] font-bold">
+                                                <td colspan="3" class="px-3 py-2 text-right border border-gray-200">TOTALS</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[3]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200">${row.values[4]}</td>
+                                                <td class="px-3 py-2 text-right border border-gray-200 bg-[#C5A059] text-white">${row.values[5]}</td>
+                                                <td class="px-3 py-2 border border-gray-200"></td>
+                                                <td class="px-3 py-2 border border-gray-200"></td>
+                                            </tr>
+                                        `;
+                                    }
+                                    const statusColIdx = 7;
+                                    const isPaid = row.values[statusColIdx] === 'Fully Paid';
+                                    return `
+                                        <tr>
+                                            ${row.values.map((v, i) => `
+                                                <td class="px-3 py-2 border border-gray-100 ${i === 2 || i === 6 || i === 7 ? 'text-center' : (i === 3 || i === 4 || i === 5 ? 'text-right font-medium' : 'text-left')}">
+                                                    ${i === 7 ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPaid ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">${v}</span>` : v}
+                                                </td>
+                                            `).join('')}
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.innerHTML = html;
+                return;
+            }
+
+            let html = `
+                <div class="overflow-x-auto">
+            `;
+            
+            if (data.isVendorScope) {
+                html += `
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 grid grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <span class="font-bold text-[#C5A059] block uppercase tracking-wider">Work Type / Trade Scope:</span>
+                            <input type="text" value="Carpentry (Custom Woodwork & Wardrobes)" class="border border-gray-300 rounded px-2 py-1 mt-1 outline-none w-full max-w-sm text-xs focus:border-black font-semibold text-gray-800" readonly>
+                        </div>
+                        <div>
+                            <span class="font-bold text-[#C5A059] block uppercase tracking-wider">Project Name:</span>
+                            <span class="block mt-2 font-medium text-gray-800">Kapoor Penthouse Residence</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (data.isGeneric) {
+                html += `
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 text-xs">
+                        <span class="font-bold text-[#C5A059] block uppercase tracking-wider">Custom Sheet Heading:</span>
+                        <input type="text" value="Loose Furniture & Accessories Sourcing List" class="border border-gray-300 rounded px-2 py-1 mt-1 outline-none w-full max-w-sm text-xs focus:border-black font-semibold text-gray-800">
+                        <span class="text-[10px] text-gray-400 block mt-1">Type inside this heading field to preview custom spreadsheet titles.</span>
+                    </div>
+                `;
+            }
+
+            html += `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-[#1A1A1A]">
+                        <tr>
+                            ${data.headers.map(h => `<th class="px-3 py-2 text-center text-xs font-semibold text-[#F5F5F0] border border-gray-700">${h}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100 text-xs">
+            `;
+
+            data.rows.forEach((row, idx) => {
+                const isOdd = idx % 2 === 1;
+                const rowBg = isOdd ? 'bg-[#FDFDFB]' : 'bg-white';
+                
+                if (row.isSubhead) {
+                    html += `
+                        <tr class="bg-[#F5F5F0] font-semibold text-gray-800">
+                            <td class="px-3 py-1.5 text-center border border-gray-200">${row.values[0]}</td>
+                            <td colspan="${data.headers.length - 1}" class="px-3 py-1.5 border border-gray-200 text-left">${row.values[1]}</td>
+                        </tr>
+                    `;
+                } else if (row.isRoom) {
+                    html += `
+                        <tr class="bg-stone-200 font-bold text-gray-900 text-sm">
+                            <td colspan="${data.headers.length}" class="px-3 py-2 text-left border border-gray-300 tracking-wider">${row.values[0]}</td>
+                        </tr>
+                    `;
+                } else if (row.isSection) {
+                    html += `
+                        <tr class="bg-stone-100 font-semibold text-gray-700">
+                            <td colspan="${data.headers.length}" class="px-5 py-1.5 text-left border border-gray-200 tracking-wide">${row.values[0]}</td>
+                        </tr>
+                    `;
+                } else if (row.isTotal) {
+                    html += `
+                        <tr class="bg-[#F5F5F0] font-bold">
+                            <td colspan="${data.headers.length - 2}" class="px-3 py-2 text-right border border-gray-200">${row.values[0]}</td>
+                            <td class="px-3 py-2 text-right border border-gray-200 bg-[#C5A059] text-white font-bold">${row.values[data.headers.length - 2]}</td>
+                            <td class="px-3 py-2 border border-gray-200"></td>
+                        </tr>
+                    `;
+                } else {
+                    html += `<tr class="${rowBg}">`;
+                    row.values.forEach((v, cellIdx) => {
+                        let cellAlign = 'text-left';
+                        let fontStyle = '';
+                        let cellContent = v;
+                        let customBg = '';
+
+                        if (sheetName === 'boq') {
+                            if (cellIdx === 0 || cellIdx === 5) cellAlign = 'text-center';
+                            if (cellIdx === 4 || cellIdx === 6 || cellIdx === 7) cellAlign = 'text-right font-medium';
+                            if (cellIdx === 7) fontStyle = 'font-semibold text-gray-900';
+                        } else if (sheetName === 'timeline') {
+                            if (cellIdx === 0 || cellIdx === 5 || cellIdx === 6 || cellIdx === 8) cellAlign = 'text-center';
+                            if (cellIdx === 7 || cellIdx === 9) cellAlign = 'text-right';
+                            if (cellIdx >= 10) {
+                                cellAlign = 'text-center font-bold';
+                                if (v === '■') {
+                                    cellContent = `<span class="inline-block w-3 h-3 bg-[#C5A059] rounded-sm"></span>`;
+                                }
+                            }
+                        } else if (sheetName === 'roomwise') {
+                            if (cellIdx === 0) {
+                                cellAlign = 'text-center';
+                                const isChecked = v === '[x]';
+                                cellContent = `
+                                    <input type="checkbox" class="w-3.5 h-3.5 border-gray-300 text-[#C5A059] focus:ring-[#C5A059] rounded" ${isChecked ? 'checked' : ''} disabled>
+                                `;
+                            } else if (cellIdx === 5 || cellIdx === 6 || cellIdx === 7) {
+                                cellAlign = 'text-center';
+                            }
+                            if (cellIdx === 7) {
+                                let badgeColor = 'bg-gray-100 text-gray-800';
+                                if (v === 'Approved') badgeColor = 'bg-green-100 text-green-800';
+                                if (v === 'Rework') badgeColor = 'bg-red-100 text-red-800';
+                                if (v === 'Pending') badgeColor = 'bg-amber-100 text-amber-800';
+                                cellContent = `<span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${v}</span>`;
+                            }
+                        } else if (sheetName === 'jmc') {
+                            if (cellIdx === 0 || cellIdx === 3 || cellIdx === 9 || cellIdx === 10) cellAlign = 'text-center';
+                            if (cellIdx >= 4 && cellIdx <= 8) cellAlign = 'text-right font-medium';
+                            if (cellIdx === 8) fontStyle = 'font-semibold text-gray-900';
+                        } else if (sheetName === 'procurement') {
+                            if (cellIdx === 0 || cellIdx === 6 || cellIdx === 8 || cellIdx === 9 || cellIdx === 11) cellAlign = 'text-center';
+                            if (cellIdx === 5) cellAlign = 'text-right font-medium';
+                            if (cellIdx === 7) {
+                                cellAlign = 'text-center';
+                                const isDel = v === 'Delivered';
+                                const isTransit = v === 'In Transit';
+                                const badgeClass = isDel ? 'bg-green-100 text-green-800' : (isTransit ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800');
+                                cellContent = `<span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeClass}">${v}</span>`;
+                            }
+                        } else if (sheetName === 'cost_supply' || sheetName === 'cost_services') {
+                            if (cellIdx === 0 || cellIdx === 4 || cellIdx === 11) cellAlign = 'text-center';
+                            if (cellIdx === 3 || (cellIdx >= 5 && cellIdx <= 10) || cellIdx === 12 || cellIdx === 13) cellAlign = 'text-right font-medium';
+                            
+                            // Highlight selected contractor/vendor column total
+                            if (cellIdx === 11) fontStyle = 'font-bold text-[#C5A059]';
+                            if (cellIdx === 13) fontStyle = 'font-semibold text-red-600';
+                            
+                            // Highlight selected vendor rates in quotes
+                            const selVal = row.values[11];
+                            if (sheetName === 'cost_supply') {
+                                if (selVal === 'Vendor A' && (cellIdx === 5 || cellIdx === 6)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                                if (selVal === 'Vendor B' && (cellIdx === 7 || cellIdx === 8)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                                if (selVal === 'Vendor C' && (cellIdx === 9 || cellIdx === 10)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                            } else {
+                                if (selVal === 'Contr A' && (cellIdx === 5 || cellIdx === 6)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                                if (selVal === 'Contr B' && (cellIdx === 7 || cellIdx === 8)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                                if (selVal === 'Contr C' && (cellIdx === 9 || cellIdx === 10)) customBg = 'bg-amber-50 border-l border-r border-amber-200';
+                            }
+                        } else if (sheetName === 'contract_terms') {
+                            if (cellIdx === 0) cellAlign = 'text-center font-bold';
+                            if (cellIdx === 1) fontStyle = 'font-semibold text-gray-900';
+                        }
+                        
+                        html += `
+                            <td class="px-3 py-2.5 border border-gray-200 ${cellAlign} ${fontStyle} ${customBg}">
+                                ${cellContent}
+                            </td>
+                        `;
+                    });
+                    html += `</tr>`;
+                }
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            </div>
+            `;
+
+            if (data.isJMC) {
+                html += `
+                    <div class="mt-6 border-t border-gray-300 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-center text-gray-600 bg-gray-50 p-4 rounded-md">
+                        <div>
+                            <span class="block font-medium">Lead Site Engineer</span>
+                            <span class="block text-gray-400 mt-6">_________________________________</span>
+                            <span class="block text-[10px] uppercase mt-1">(Sign & Date)</span>
+                        </div>
+                        <div>
+                            <span class="block font-medium">Assigned Project Contractor</span>
+                            <span class="block text-gray-400 mt-6">_________________________________</span>
+                            <span class="block text-[10px] uppercase mt-1">(Sign & Date)</span>
+                        </div>
+                        <div>
+                            <span class="block font-medium">Managing Project Manager</span>
+                            <span class="block text-gray-400 mt-6">_________________________________</span>
+                            <span class="block text-[10px] uppercase mt-1">(Sign & Date)</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
         // Auto-login if token exists
         window.onload = () => {
             if (sessionToken) {
@@ -589,5 +1190,34 @@
             }
         }
     </script>
+    <!-- Project Modal -->
+    <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg">
+            <h3 class="text-lg font-medium mb-4" id="project-modal-title">Project Details</h3>
+            <form id="project-form" onsubmit="saveProject(event)" class="space-y-4">
+                <input type="hidden" id="project-id">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Title</label>
+                    <input type="text" id="project-title" required class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Meta Tag (e.g. Featured Projects)</label>
+                    <input type="text" id="project-meta" required class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Description</label>
+                    <textarea id="project-desc" rows="3" required class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Image URL</label>
+                    <input type="text" id="project-image" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeProjectModal()" class="px-4 py-2 text-sm text-gray-600 hover:text-black">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

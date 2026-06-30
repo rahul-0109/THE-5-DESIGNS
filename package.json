@@ -5,6 +5,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "pptxgenjs": "^4.0.1"
   }
 }

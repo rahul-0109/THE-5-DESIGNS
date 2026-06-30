@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Obsidian Suite | THE 5 DESIGNS</title>
-    <!-- Use similar fonts as index.html -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <title>Design Studio | Company Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --color-bg: #0F0F0F;
-            --color-text: #F5F5F0;
+            --color-bg: #F5F5F0;
+            --color-obsidian: #1A1A1A;
             --color-accent: #C5A059;
-            --color-text-muted: #8E8E8E;
+            --color-text: #1A1A1A;
+            --color-text-muted: rgba(26, 26, 26, 0.6);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+            --ease-premium: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * {
@@ -20,55 +28,588 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-y: scroll;
+            height: auto;
+        }
+
         body {
-            font-family: 'Outfit', sans-serif;
             background-color: var(--color-bg);
             color: var(--color-text);
+            font-family: var(--font-body);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* Navigation (Same as main site) */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
+        /* --- SLIDE STRUCTURE --- */
+        section { width: 100%; min-height: 100vh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            padding: 2rem 4rem;
-            z-index: 100;
-            mix-blend-mode: difference;
+            position: relative;
+            padding: 5% 10%;
+            overflow: hidden;
         }
 
-        .nav-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-style: italic;
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
+        @media print {
+            html, body {
+                scroll-snap-type: none;
+            }
+            section {
+                width: 297mm;
+                height: 210mm;
+                padding: 20mm;
+                page-break-after: always;
+                opacity: 1 !important;
+                transform: none !important;
+            }
         }
 
-        .nav-center {
-            display: flex;
-            gap: 3rem;
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
         }
 
-        .nav-link {
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.85rem;
+        .studio-tag {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
-            transition: color 0.3s ease;
+            opacity: 0.5;
         }
 
-        .nav-link:hover {
+        /* --- OMBRE EFFECT --- */
+        .ombre-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.4) 0%, rgba(26, 26, 26, 0) 50%, rgba(26, 26, 26, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .ombre-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+            z-index: 2;
+        }
+
+        /* --- SLIDE 1: TITLE --- */
+        #slide-1 {
+            background: #1A1A1A;
+            color: #F5F5F0;
+        }
+        #slide-1 .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.45;
+            z-index: 1;
+        }
+        #slide-1 .content-wrap {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+        #slide-1 h1 {
+            font-size: 8rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: #F5F5F0;
+            opacity: 1 !important; /* Ensure visibility */
+        }
+        #slide-1 p {
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-size: 1.0rem;
             color: var(--color-accent);
         }
 
-        /* Project Hero */
+        /* --- SLIDE 2: THE STUDIO --- */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            width: 100%;
+        }
+        .text-content h2 {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-text-muted);
+        }
+        .image-box {
+            width: 100%;
+            height: 60vh;
+            background: #e0e0d5;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+        }
+
+        /* --- SLIDE 4: SERVICES --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            width: 100%;
+            margin-top: 4rem;
+        }
+        .service-item {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 2rem;
+        }
+        .service-item h4 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .service-item p {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- SLIDE 5-8: PROJECTS --- */
+        .full-bleed-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        .project-meta {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: #F5F5F0;
+        }
+        .project-meta h3 {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: #F5F5F0;
+        }
+
+        /* --- SLIDE 9: FOUNDER & EXPERIENCE --- */
+        .founder-layout {
+            display: flex;
+            gap: 6rem;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .founder-text {
+            flex: 1.5;
+        }
+        .experience-list {
+            flex: 1;
+            margin-top: 2rem;
+        }
+        .exp-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .exp-year {
+            font-size: 0.7rem;
+            color: var(--color-accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+        }
+        .exp-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-style: italic;
+        }
+
+        /* --- SLIDE 10: WHAT MAKES US SPECIAL --- */
+        .special-box {
+            text-align: center;
+            max-width: 800px;
+        }
+        .special-box h2 {
+            font-size: 5rem;
+            margin-bottom: 3rem;
+        }
+        .accent-bar {
+            width: 100px;
+            height: 1px;
+            background: var(--color-accent);
+            margin: 2rem auto;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulseFive {
+            0% { opacity: 0.8; transform: scale(1); filter: drop-shadow(0 0 2px rgba(197, 160, 89, 0.2)); }
+            50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 8px rgba(197, 160, 89, 0.6)); }
+            100% { opacity: 0.8; transform: scale(1); filter: drop-shadow(0 0 2px rgba(197, 160, 89, 0.2)); }
+        }
+        .animated-five {
+            display: inline-block;
+            color: var(--color-accent);
+            animation: pulseFive 4s ease-in-out infinite;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            font-weight: 500;
+            line-height: 0.8;
+            margin: 0 0.05em;
+            vertical-align: -0.05em;
+        }
+        .hero-font {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.4em;
+            line-height: 1;
+        }
+        .hero-five {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-accent);
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
+        /* Form & Social Styles */
+        .inquiry-form input:focus {
+            border-bottom: 1px solid var(--color-accent) !important;
+        }
+        .submit-btn:hover {
+            opacity: 0.8;
+        }
+        .social-icon {
+            fill: var(--color-text);
+            opacity: 0.6;
+            transition: all 0.3s var(--ease-premium);
+            width: 20px;
+            height: 20px;
+        }
+        .social-icon:hover {
+            fill: var(--color-accent);
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        
+        /* Navigation & Floating Elements */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.6rem 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.5s var(--ease-premium);
+        }
+        
+        nav.scrolled {
+            background: rgba(245, 245, 240, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        nav.on-dark {
+            background: rgba(26, 26, 26, 0.4);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #1A1A1A;
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5% 10%;
+        }
+
+        .preloader-visible-five {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.2rem;
+            color: #C5A059;
+            font-style: italic;
+            font-weight: 400;
+            opacity: 0;
+            animation: singleReveal 2.0s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .brand-five {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.2rem;
+            color: #C5A059;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        @keyframes singleReveal {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.9); }
+            40% { opacity: 1; filter: blur(0); transform: scale(1); }
+            100% { opacity: 1; filter: blur(0); transform: scale(1); }
+        }
+
+        /* Luxury Cursor */
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #C5A059;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 99999;
+            pointer-events: none;
+            mix-blend-mode: difference; /* Inversion effect */
+        }
+        .cursor-halo {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 99998;
+            pointer-events: none;
+            transition: width 0.4s, height 0.4s, background 0.4s, border-color 0.4s;
+            backdrop-filter: blur(2px); /* Lens blur effect */
+        }
+        .cursor-particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: #C5A059;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99997;
+            opacity: 0.5;
+        }
+        body:hover .cursor-dot, body:hover .cursor-halo { opacity: 1; }
+        .cursor-active .cursor-halo {
+            width: 60px;
+            height: 60px;
+            background: rgba(197, 160, 89, 0.05);
+            border-color: rgba(197, 160, 89, 0.8);
+        }
+        
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-style: italic; /* Tilted as requested */
+            transition: all 0.3s;
+            line-height: 1;
+        }
+        .nav-logo:hover { transform: scale(1.1); filter: brightness(1.2); }
+        
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .nav-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--color-accent);
+            margin: 0 2rem;
+            opacity: 0.6;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        nav.on-dark .nav-link { color: #F5F5F0; }
+        nav.on-dark .social-icon { fill: #F5F5F0; opacity: 0.8; }
+        
+        .nav-link:hover { color: var(--color-accent) !important; }
+        
+        .nav-socials {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: transparent;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s var(--ease-premium);
+            text-decoration: none;
+            border: 1px solid rgba(26, 26, 26, 0.1);
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.1) translateY(-5px);
+            border-color: var(--color-accent);
+        }
+        .whatsapp-float svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--color-text);
+            transition: fill 0.3s;
+            opacity: 0.6;
+        }
+        .whatsapp-float:hover svg { fill: var(--color-accent); opacity: 1; }
+        section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s var(--ease-premium);
+        }
+        section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media print {
+            body { background: white; }
+            section { opacity: 1 !important; transform: none !important; }
+        }
+
+        /* Custom Cursor & Luxury Effects */
+        /* Luxury Mouse Animation */
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10001;
+        }
+        .cursor-follower {
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--color-accent);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10000;
+            transition: width 0.4s var(--ease-premium), 
+                        height 0.4s var(--ease-premium), 
+                        background-color 0.4s var(--ease-premium),
+                        border-color 0.4s var(--ease-premium);
+            backdrop-filter: blur(2px);
+            background-color: rgba(197, 160, 89, 0.02);
+        }
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+        
+        /* Preloader Styles handled above */
+        .preloader-h1 {
+            font-family: var(--font-display);
+            font-size: 8rem; 
+            font-style: italic;
+            font-weight: 300;
+            color: var(--color-accent);
+            text-align: center;
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+        .preloader-hidden-text {
+            visibility: hidden;
+            pointer-events: none;
+            user-select: none;
+        }
+        .preloader-visible-five {
+            display: inline-block;
+            font-family: 'Playfair Display', serif; /* Critical Match */
+            font-size: 1.4em; 
+            font-weight: 500;
+            font-style: italic;
+            opacity: 0;
+        }
+        
+        section {
+            opacity: 1;
+            transform: none;
+            transition: none;
+        }
+        .reveal-content {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        /* Text Reveal Effect */
+        .text-reveal {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            display: block;
+        }
+        .text-reveal-inner {
+            display: block;
+            transform: translateY(105%);
+        }
+    </style>
+
+    <style>
+/* Project Hero */
         .project-hero {
             position: relative;
             width: 100vw;
@@ -171,47 +712,48 @@
             color: var(--color-text-muted);
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 6rem 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+        
+        /* Add GSAP initial states */
+        .space-title, .space-desc, .space-image-wrapper {
+            opacity: 0;
+            transform: translateY(30px);
         }
-
-        .footer-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-style: italic;
+        .project-hero {
+            background-color: var(--color-obsidian);
+        }
+        .project-meta-tag {
             color: var(--color-accent);
+            letter-spacing: 0.4em;
+            font-size: 0.8rem;
+            text-transform: uppercase;
             margin-bottom: 1rem;
         }
 
-        @media (max-width: 768px) {
-            nav { padding: 1.5rem; }
-            .nav-center { display: none; }
-            .project-title { font-size: 3.5rem; }
-            .project-hero { padding: 2rem; }
-            .project-details { padding: 4rem 2rem; }
-            .space-section, .space-section.reverse { flex-direction: column; gap: 2rem; margin-bottom: 6rem; }
-            .space-image-wrapper { height: 50vh; width: 100%; }
-            .space-title { font-size: 2.5rem; }
-        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="/" class="nav-logo">5</a>
-        <div class="nav-center">
-            <a href="/#slide-2" class="nav-link">Essence</a>
-            <a href="/#slide-5" class="nav-link">Projects</a>
-            <a href="/diaries.html" class="nav-link">Diaries</a>
-            <a href="/#slide-9" class="nav-link">Contact</a>
-        </div>
-        <div style="width: 32px;"></div> <!-- Spacer to center -->
-    </nav>
+    <div class="noise-overlay"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-halo"></div>
 
-    <!-- Dynamic Hero -->
+<nav class="on-dark">
+        <a href="#slide-1" class="nav-logo">5</a>
+        
+        <div class="nav-center">
+            <a href="#slide-5" class="nav-link">Projects</a>
+            <span class="nav-divider"></span>
+            <a href="/diaries.html" target="_blank" class="nav-link">Diaries</a>
+        </div>
+        
+        <div class="nav-socials">
+            <a href="#" id="instagram_url" aria-label="Instagram"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+            <a href="#" id="youtube_url" aria-label="Youtube"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 4-8 4z"/></svg></a>
+            <a href="#" id="pinterest_url" aria-label="Pinterest"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.199-2.403.041-3.437.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.032-1.002 2.324-1.492 3.121 1.125.347 2.314.535 3.548.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg></a>
+            <a href="#" id="linkedin_url" aria-label="LinkedIn"><svg class="social-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg></a>
+        </div>
+    </nav>
+<!-- Dynamic Hero -->
     <section class="project-hero">
         <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2000" class="hero-bg" alt="Project Cover">
         <div class="hero-overlay"></div>
@@ -266,10 +808,132 @@
 
     </section>
 
-    <div class="footer">
-        <div class="footer-logo">5</div>
-        <p style="color: var(--color-text-muted); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;">The 5 Designs © 2026</p>
-    </div>
+    <!-- Footer -->
+    <section id="slide-11" style="background-color: var(--color-obsidian); color: #F5F5F0; padding: 4rem 10% 2rem 10%; align-items: flex-start; justify-content: flex-start; height: auto;">
+        <div style="width: 100%; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(245, 245, 240, 0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
+            <div>
+                <h2 style="font-size: 3rem; margin-bottom: 1rem;"><span class="brand-five">5</span></h2>
+                <p style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; max-width: 300px; line-height: 1.6;">A studio built on a simple belief: true luxury lies in the experience.</p>
+            </div>
+            <div style="display: flex; gap: 4rem;">
+                <div>
+                    <h4 style="font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.5rem;">Connect</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+                        <li><a href="#" aria-label="Instagram" class="nav-link" style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; letter-spacing: 0.05em; text-transform: none;">Instagram</a></li>
+                        <li><a href="#" aria-label="Whatsapp" class="nav-link" style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; letter-spacing: 0.05em; text-transform: none;">WhatsApp</a></li>
+                        <li><a href="mailto:info@the5designs.com" class="nav-link" style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; letter-spacing: 0.05em; text-transform: none;">info@the5designs.com</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.5rem;">Studio</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+                        <li><a href="/terms.html" class="nav-link" style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; letter-spacing: 0.05em; text-transform: none;">Terms & Conditions</a></li>
+                        <li style="color: rgba(245, 245, 240, 0.6); font-size: 0.9rem; line-height: 1.6;">Banjara Hills, Road No 12<br>Hyderabad, India</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%; text-align: center;">
+            <p style="color: rgba(245, 245, 240, 0.4); font-size: 0.8rem; letter-spacing: 0.1em;">© 2026 THE 5 DESIGNS. ALL RIGHTS RESERVED.</p>
+        </div>
+    </section>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="#" class="whatsapp-float" aria-label="Contact on WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.391.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/></svg>
+    </a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lenis Smooth Scroll
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smooth: true,
+            });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            
+            // GSAP ScrollTrigger Integration
+            gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+            gsap.ticker.lagSmoothing(0, 0);
+
+            // Custom Cursor
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorHalo = document.querySelector('.cursor-halo');
+            let mouseX = 0, mouseY = 0, haloX = 0, haloY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                if(cursorDot) cursorDot.style.transform = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
+            });
+            
+            function animateHalo() {
+                haloX += (mouseX - haloX) * 0.15;
+                haloY += (mouseY - haloY) * 0.15;
+                if(cursorHalo) cursorHalo.style.transform = `translate(${haloX - 20}px, ${haloY - 20}px)`;
+                requestAnimationFrame(animateHalo);
+            }
+            animateHalo();
+            
+            // Hover states
+            document.querySelectorAll('a, button, input, .video-card, .founder-image').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-active'));
+            });
+
+            // SCROLL REVEAL ENGINE
+            document.querySelectorAll('section').forEach((section) => {
+                const elements = section.querySelectorAll('h2, p, .space-image-wrapper, .space-content');
+                if(elements.length === 0) return;
+                gsap.to(elements, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.2,
+                    stagger: 0.1,
+                    ease: "power3.out"
+                });
+            });
+
+            // Navigation State
+            const nav = document.querySelector('nav');
+            ScrollTrigger.create({
+                trigger: ".project-hero",
+                start: "top top",
+                onLeave: () => { if(nav) { nav.classList.remove('on-dark'); nav.classList.add('scrolled'); } },
+                onEnterBack: () => { if(nav) { nav.classList.add('on-dark'); nav.classList.remove('scrolled'); } }
+            });
+            
+            fetchSiteConfig();
+        });
+        
+        async function fetchSiteConfig() {
+            try {
+                const response = await fetch('/api/settings');
+                const resData = await response.json();
+                if (response.ok && resData.success && resData.data) {
+                    const data = resData.data;
+                    Object.keys(data).forEach(key => {
+                        if (key === 'whatsapp_number') {
+                            const waLink = 'https://wa.me/' + data[key].replace(/[^0-9]/g, '');
+                            document.querySelectorAll('.whatsapp-float, [aria-label="Whatsapp"], [aria-label="Contact on WhatsApp"]').forEach(a => a.href = waLink);
+                        }
+                    });
+                }
+            } catch (e) { 
+                console.warn("CMS Dynamic Sync offline."); 
+            }
+        }
+    </script>
 
 </body>
 </html>

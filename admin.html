@@ -42,8 +42,12 @@
                     Business Sheets
                 </a>
                 <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     Site Settings
+                </a>
+                <a href="#" onclick="showSection('faqs')" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200">
+                    <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Manage FAQs
                 </a>
             </nav>
             
@@ -104,8 +108,11 @@
 
                 <!-- SETTINGS SECTION -->
                 <section id="settings-section" class="hidden max-w-2xl space-y-8">
-                    <div class="card p-6 space-y-6">
-                        <h3 class="text-lg font-medium border-b border-gray-100 pb-4">Global Site Configuration</h3>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900">Site Settings</h2>
+                            <p class="text-gray-500 text-sm mt-1">Configure global details and metadata</p>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="settings-form">
                             <!-- Hero Section -->
                             <div class="col-span-2 border-b border-gray-100 pb-2">
@@ -190,7 +197,25 @@
                                 <input type="text" data-key="pinterest_url" placeholder="https://pinterest.com/..." class="w-full border border-gray-200 rounded-lg px-4 py-2 outline-none focus:border-black transition-colors">
                             </div>
                         </div>
-                        <button onclick="saveSettings()" class="bg-black text-white w-full py-3 rounded-lg font-medium hover:bg-gray-800 transition-all">Save All Changes</button>
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <button onclick="saveSettings()" class="bg-black text-white w-full py-3 rounded-lg font-medium hover:bg-gray-800 transition-all">Save All Changes</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FAQS SECTION -->
+                <section id="faqs-section" class="hidden max-w-3xl space-y-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-bold text-gray-900">Manage FAQs</h2>
+                            <p class="text-gray-500 text-sm mt-1">Edit the 10 Frequently Asked Questions displayed on the main website.</p>
+                        </div>
+                        <div id="faqs-container" class="space-y-6">
+                            <!-- Injected via JS -->
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <button onclick="saveFaqs()" class="bg-black text-white w-full py-3 rounded-lg font-medium hover:bg-gray-800 transition-all">Save FAQs</button>
+                        </div>
                     </div>
                 </section>
 
@@ -209,39 +234,56 @@
                                 <input type="text" id="diary-image" placeholder="Cover Image URL" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                                 <input type="text" id="diary-author" placeholder="Author (Default: Rahul Sharma, Founder - 5)" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
                                 <input type="text" id="diary-keywords" placeholder="SEO Keywords (comma separated)" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Publish Schedule (Leave empty to publish immediately)</label>
+                                    <input type="datetime-local" id="diary-publish-date" class="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm outline-none focus:border-black">
+                                </div>
                             </div>
                             <div class="w-full mb-4">
-                                <div id="editor-toolbar" class="border border-gray-200 rounded-t-lg bg-gray-50">
+                                <div id="editor-toolbar" class="border border-gray-200 rounded-t-lg bg-gray-50 p-2">
                                     <span class="ql-formats">
                                         <select class="ql-font">
-                                            <option selected></option>
-                                            <option value="serif"></option>
-                                            <option value="monospace"></option>
+                                            <option selected>Sans Serif</option>
+                                            <option value="serif">Serif</option>
+                                            <option value="monospace">Monospace</option>
+                                        </select>
+                                        <select class="ql-size">
+                                            <option value="small">Small</option>
+                                            <option selected>Normal</option>
+                                            <option value="large">Large</option>
+                                            <option value="huge">Huge</option>
                                         </select>
                                         <select class="ql-header">
-                                            <option value="1"></option>
-                                            <option value="2"></option>
-                                            <option value="3"></option>
-                                            <option selected></option>
+                                            <option value="1">Heading 1</option>
+                                            <option value="2">Heading 2</option>
+                                            <option value="3">Heading 3</option>
+                                            <option selected>Normal</option>
                                         </select>
                                     </span>
                                     <span class="ql-formats">
-                                        <button class="ql-bold"></button>
-                                        <button class="ql-italic"></button>
-                                        <button class="ql-underline"></button>
+                                        <button class="ql-bold" title="Bold"></button>
+                                        <button class="ql-italic" title="Italic"></button>
+                                        <button class="ql-underline" title="Underline"></button>
+                                        <button class="ql-strike" title="Strikethrough"></button>
                                     </span>
                                     <span class="ql-formats">
-                                        <select class="ql-color"></select>
-                                        <select class="ql-background"></select>
+                                        <select class="ql-color" title="Text Color"></select>
+                                        <select class="ql-background" title="Background Color"></select>
                                     </span>
                                     <span class="ql-formats">
-                                        <button class="ql-list" value="ordered"></button>
-                                        <button class="ql-list" value="bullet"></button>
-                                        <select class="ql-align"></select>
+                                        <button class="ql-list" value="ordered" title="Ordered List"></button>
+                                        <button class="ql-list" value="bullet" title="Bullet List"></button>
+                                        <button class="ql-indent" value="-1" title="Decrease Indent"></button>
+                                        <button class="ql-indent" value="+1" title="Increase Indent (Spacing)"></button>
+                                        <select class="ql-align" title="Alignment"></select>
                                     </span>
                                     <span class="ql-formats">
-                                        <button class="ql-link"></button>
-                                        <button class="ql-image"></button>
+                                        <button class="ql-link" title="Insert Link"></button>
+                                        <button class="ql-image" title="Insert Image"></button>
+                                        <button class="ql-video" title="Insert Video"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-clean" title="Clear Formatting"></button>
                                     </span>
                                 </div>
                                 <div id="diary-content-editor" style="height: 350px;" class="border border-t-0 border-gray-200 rounded-b-lg bg-white"></div>
@@ -418,7 +460,9 @@
             fetchLeads();
             fetchProjects();
             fetchSettings();
+            fetchFaqs();
             loadManageDiaries();
+            showSection('leads');
             renderSheetPreview('boq'); // Load sheets preview
         }
 
@@ -505,6 +549,8 @@
                     document.getElementById('project-id').value = p.id;
                     document.getElementById('project-title').value = p.title;
                     document.getElementById('project-meta').value = p.meta;
+                    document.getElementById('project-area').value = p.area || '';
+                    document.getElementById('project-location').value = p.location || '';
                     document.getElementById('project-desc').value = p.description;
                     document.getElementById('project-image').value = p.image_url;
                     if (p.spaces) currentSpaces = JSON.parse(JSON.stringify(p.spaces));
@@ -524,6 +570,8 @@
             const payload = {
                 title: document.getElementById('project-title').value,
                 meta: document.getElementById('project-meta').value,
+                area: document.getElementById('project-area').value,
+                location: document.getElementById('project-location').value,
                 description: document.getElementById('project-desc').value,
                 image_url: document.getElementById('project-image').value,
                 spaces: currentSpaces
@@ -559,7 +607,6 @@
 
         async function fetchLeads() {
             if (isDemoMode) {
-                // Populate mock demo leads
                 const tbody = document.getElementById('leads-table-body');
                 tbody.innerHTML = `
                     <tr>
@@ -625,6 +672,78 @@
             }
         }
 
+        async function fetchFaqs() {
+            try {
+                const response = await fetch('/api/faqs', {
+                    headers: { 'Authorization': sessionToken }
+                });
+                const resData = await response.json();
+                if (response.ok && resData.success) {
+                    const faqs = resData.data;
+                    const container = document.getElementById('faqs-container');
+                    let html = '';
+                    for (let i = 0; i < 10; i++) {
+                        const q = faqs[i] ? faqs[i].q : '';
+                        const a = faqs[i] ? faqs[i].a : '';
+                        html += `
+                            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <h4 class="font-medium text-sm text-gray-500 mb-3 uppercase tracking-wider">FAQ ${i + 1}</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Question</label>
+                                        <input type="text" id="faq-q-${i}" value="${q.replace(/"/g, '&quot;')}" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Answer</label>
+                                        <textarea id="faq-a-${i}" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black bg-white">${a}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    container.innerHTML = html;
+                }
+            } catch (e) {
+                console.error("Failed to fetch FAQs:", e);
+            }
+        }
+
+        async function saveFaqs() {
+            if (isDemoMode) return alert("Saving FAQs is disabled in Demo Mode");
+            
+            const faqs = [];
+            for (let i = 0; i < 10; i++) {
+                const q = document.getElementById(`faq-q-${i}`).value;
+                const a = document.getElementById(`faq-a-${i}`).value;
+                if (q || a) {
+                    faqs.push({ q, a });
+                } else {
+                    faqs.push({ q: '', a: '' });
+                }
+            }
+
+            try {
+                const response = await fetch('/api/faqs', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionToken
+                    },
+                    body: JSON.stringify({ faqs })
+                });
+                
+                const resData = await response.json();
+                if (response.ok && resData.success) {
+                    alert("FAQs saved successfully!");
+                } else {
+                    alert("Error saving FAQs: " + (resData.message || "Unknown error"));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Failed to save FAQs.");
+            }
+        }
+
         async function saveSettings() {
             if (isDemoMode) return alert("Saving settings is disabled in Demo Mode");
             
@@ -663,12 +782,14 @@
             const content = quill.root.innerHTML;
             const author = document.getElementById('diary-author').value || "Rahul Sharma, Founder - 5";
             const keywords = document.getElementById('diary-keywords').value;
+            const publish_date_val = document.getElementById('diary-publish-date').value;
+            const publish_date = publish_date_val ? new Date(publish_date_val).toISOString() : new Date().toISOString();
 
             if (!title) return alert("Title is required");
 
             try {
                 let method = 'POST';
-                let reqBody = { type: 'article', title, media_url, content, author, keywords };
+                let reqBody = { type: 'article', title, media_url, content, author, keywords, publish_date };
                 
                 let updateId = document.getElementById('diary-id')?.value;
                 if (updateId) {
@@ -694,6 +815,7 @@
                     quill.setText('');
                     document.getElementById('diary-author').value = '';
                     document.getElementById('diary-keywords').value = '';
+                    document.getElementById('diary-publish-date').value = '';
                     if (document.getElementById('diary-id')) document.getElementById('diary-id').value = '';
                     document.getElementById('btn-article-publish').innerText = 'Publish Blog';
                     
@@ -726,7 +848,12 @@
                             <tr>
                                 <td class="px-4 py-3 whitespace-nowrap text-gray-500">${date}</td>
                                 <td class="px-4 py-3 text-gray-900 font-medium truncate max-w-[200px]">${d.title}</td>
-                                <td class="px-4 py-3 text-gray-600">${author}</td>
+                                <td class="px-4 py-3 text-gray-600">
+                                    ${author}<br>
+                                    <span class="text-xs ${new Date(d.publish_date) > new Date() ? 'text-yellow-600 font-bold' : 'text-green-600'}">
+                                        ${new Date(d.publish_date) > new Date() ? 'Scheduled: ' + new Date(d.publish_date).toLocaleString() : 'Live'}
+                                    </span>
+                                </td>
                                 <td class="px-4 py-3 text-gray-400 text-xs truncate max-w-[150px]">${keywords}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-right">
                                     <button onclick="editDiary('${d.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
@@ -747,6 +874,15 @@
             quill.clipboard.dangerouslyPasteHTML(diary.content || '');
             document.getElementById('diary-author').value = diary.author || "";
             document.getElementById('diary-keywords').value = diary.keywords || "";
+            if (diary.publish_date) {
+                // Convert ISO to local datetime-local format (YYYY-MM-DDThh:mm)
+                const d = new Date(diary.publish_date);
+                const pad = n => n.toString().padStart(2, '0');
+                const localStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                document.getElementById('diary-publish-date').value = localStr;
+            } else {
+                document.getElementById('diary-publish-date').value = '';
+            }
             
             let hiddenId = document.getElementById('diary-id');
             if (!hiddenId) {
@@ -1287,6 +1423,16 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Meta Tag (e.g. Featured Projects)</label>
                     <input type="text" id="project-meta" required class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Area</label>
+                        <input type="text" id="project-area" placeholder="e.g. 12000 sft" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Location</label>
+                        <input type="text" id="project-location" placeholder="e.g. Maharashtra" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-black">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Description</label>

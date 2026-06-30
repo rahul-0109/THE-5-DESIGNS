@@ -379,6 +379,11 @@
                     <div class="hero-content">
                         <p class="hero-meta">${p.meta}</p>
                         <h1 class="hero-title">${p.title}</h1>
+                        ${p.area || p.location ? `<p style="font-size: 1rem; color: var(--color-accent); letter-spacing: 0.1em; margin-bottom: 2rem; text-transform: uppercase;">
+                            ${p.area ? 'Area: ' + p.area : ''}
+                            ${p.area && p.location ? ' &nbsp;|&nbsp; ' : ''}
+                            ${p.location ? 'Location: ' + p.location : ''}
+                        </p>` : ''}
                         <p class="hero-desc">${p.description}</p>
                     </div>
                 </section>

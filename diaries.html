@@ -102,38 +102,42 @@
             position: relative;
             height: 550px;
             overflow: hidden;
-            background: var(--color-obsidian);
+            background: transparent;
             transition: transform 0.5s var(--ease-premium);
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
 
-        .diary-card:hover .diary-img {
+        .diary-card:hover .diary-img-container img {
             transform: scale(1.05);
+        }
+
+        .diary-img-container {
+            width: 100%;
+            height: 60%;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .diary-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.7;
             transition: transform 0.8s ease;
         }
 
-        .diary-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.9) 100%);
+        .diary-content-container {
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px;
+            flex-grow: 1;
         }
 
         .diary-type {
             font-size: 0.7rem;
             letter-spacing: 0.3em;
             color: var(--color-accent);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-transform: uppercase;
         }
 
@@ -141,14 +145,14 @@
             font-family: var(--font-display);
             font-size: 2rem;
             line-height: 1.1;
-            font-weight: 300;
+            font-weight: 400;
             margin-bottom: 15px;
-            color: #F5F5F0;
+            color: var(--color-obsidian);
         }
 
         .diary-content {
-            font-size: 0.85rem;
-            opacity: 0.7;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
             line-height: 1.6;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -159,15 +163,16 @@
 
         .diary-btn {
             display: inline-block;
-            color: #fff;
-            font-size: 0.7rem;
+            color: var(--color-obsidian);
+            font-size: 0.75rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            border-bottom: 1px solid #fff;
+            border-bottom: 1px solid var(--color-obsidian);
             padding-bottom: 5px;
             text-decoration: none;
             width: fit-content;
             transition: all 0.3s;
+            margin-top: auto;
         }
 
         .diary-btn:hover {
@@ -231,8 +236,10 @@
                         
                         const strippedContent = item.content ? item.content.replace(/<[^>]*>?/gm, '') : '';
                         card.innerHTML = `
-                            <img src="${item.media_url}" class="diary-img" alt="${item.title}">
-                            <div class="diary-overlay">
+                            <div class="diary-img-container">
+                                <img src="${item.media_url}" class="diary-img" alt="${item.title}">
+                            </div>
+                            <div class="diary-content-container">
                                 <p class="diary-type" style="display:flex; justify-content:space-between; width:100%;">
                                     <span>${author}</span>
                                     <span>${date}</span>

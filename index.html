@@ -885,6 +885,26 @@
             </div>
         </div>
     </section>
+
+    <section id="slide-faq" style="background-color: var(--color-bg); padding: 12% 10% 8% 10%; align-items: center;">
+        <div style="max-width: 1200px; width: 100%; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Clarity & Transparency</p>
+                <h2 style="font-family: var(--font-display); font-size: 3.5rem; font-weight: 300;">Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-container reveal-content" id="faq-wrapper" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 3rem;">
+                <div id="faq-col-1"></div>
+                <div id="faq-col-2"></div>
+            </div>
+            <style>
+                .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.6; }
+                .faq-item.active .faq-answer { max-height: 500px; }
+                .faq-item.active .faq-icon { transform: rotate(45deg); }
+                .faq-item:hover .faq-question { color: var(--color-accent) !important; }
+            </style>
+        </div>
+    </section>
     <section id="slide-8" style="display: none; background-color: var(--color-obsidian); color: #F5F5F0; padding: 10% 5%;">
         <div style="text-align: center; max-width: 1400px; width: 100%;">
             <p style="color: var(--color-accent); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem;">Social Connect</p>
@@ -978,6 +998,7 @@
             try {
                 // Initialize local site config from server settings
                 fetchSiteConfig();
+                fetchFaqs();
 
                 // Initialize Lenis Smooth Scroll
                 const lenis = new Lenis({
@@ -1204,6 +1225,49 @@
                 }
             } catch (e) { 
                 console.warn("CMS Dynamic Sync offline."); 
+            }
+        }
+
+        async function fetchFaqs() {
+            try {
+                const response = await fetch('/api/faqs');
+                const resData = await response.json();
+                if (response.ok && resData.success) {
+                    const faqs = resData.data;
+                    const col1 = document.getElementById('faq-col-1');
+                    const col2 = document.getElementById('faq-col-2');
+                    if (!col1 || !col2) return;
+                    
+                    let html1 = '';
+                    let html2 = '';
+                    let validFaqs = faqs.filter(item => item.q && item.a);
+                    
+                    validFaqs.forEach((item, index) => {
+                        let html = `
+                        <div class="faq-item" style="border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer;" onclick="this.classList.toggle('active')">
+                            <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; font-family: var(--font-display); font-size: 1.25rem; color: var(--color-obsidian); transition: color 0.3s;">
+                                <span>${item.q}</span>
+                                <span class="faq-icon" style="color: var(--color-accent); font-size: 1.5rem; font-weight: 300; transition: transform 0.3s; line-height: 1;">+</span>
+                            </div>
+                            <div class="faq-answer-container">
+                                <div class="faq-answer">
+                                    <p style="padding-bottom: 1.5rem;">${item.a.replace(/\n/g, '<br>')}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                        
+                        if (index < 5) {
+                            html1 += html;
+                        } else {
+                            html2 += html;
+                        }
+                    });
+                    
+                    col1.innerHTML = html1;
+                    col2.innerHTML = html2;
+                }
+            } catch (e) {
+                console.warn("Failed to load FAQs", e);
             }
         }
     </script>

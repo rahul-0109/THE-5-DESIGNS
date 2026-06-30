@@ -177,6 +177,30 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
+    // FAQs (GET: Open, POST: Protected)
+    if (pathname === '/api/faqs') {
+        if (method === 'GET') {
+            const db = readDB();
+            return sendJSON(res, 200, { success: true, data: db.faqs || [] });
+        }
+        if (method === 'POST') {
+            if (!checkAuth(req)) {
+                return sendJSON(res, 403, { success: false, message: "Access Denied" });
+            }
+            const body = await getJsonBody(req);
+            if (!body || !Array.isArray(body.faqs)) {
+                return sendJSON(res, 400, { success: false, message: "Invalid payload format. Expected { faqs: [...] }" });
+            }
+            const db = readDB();
+            db.faqs = body.faqs;
+            if (writeDB(db)) {
+                return sendJSON(res, 200, { success: true, message: "FAQs updated successfully" });
+            } else {
+                return sendJSON(res, 500, { success: false, message: "Database write failure" });
+            }
+        }
+    }
+
     // 3. Config/Settings (GET: Open, POST: Protected)
     if (pathname === '/api/settings') {
         if (method === 'GET') {
@@ -230,6 +254,8 @@ const server = http.createServer(async (req, res) => {
                 title: body.title,
                 meta: body.meta || "Featured Project",
                 description: body.description || "",
+                area: body.area || "",
+                location: body.location || "",
                 image_url: processLocalImagePath(body.image_url || ""),
                 spaces: Array.isArray(body.spaces) ? body.spaces.map(s => ({...s, image_url: processLocalImagePath(s.image_url)})) : [],
                 created_at: new Date().toISOString()
@@ -279,7 +305,13 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/diaries') {
         if (method === 'GET') {
             const db = readDB();
-            return sendJSON(res, 200, { success: true, data: db.diaries || [] });
+            const isAuthenticated = checkAuth(req);
+            let diaries = db.diaries || [];
+            if (!isAuthenticated) {
+                const now = new Date();
+                diaries = diaries.filter(d => !d.publish_date || new Date(d.publish_date) <= now);
+            }
+            return sendJSON(res, 200, { success: true, data: diaries });
         }
 
         if (method === 'POST') {
@@ -299,7 +331,8 @@ const server = http.createServer(async (req, res) => {
                 content: body.content || "",
                 author: body.author || "Rahul Sharma, Founder - 5",
                 keywords: body.keywords || "",
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                publish_date: body.publish_date || new Date().toISOString()
             };
             db.diaries.unshift(newDiary);
             if (writeDB(db)) {

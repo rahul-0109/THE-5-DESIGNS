@@ -972,6 +972,11 @@
                                     <div style="margin-top: 1rem;">
                                         <p class="project-card-meta">${p.meta}</p>
                                         <h2 class="project-card-title">${p.title}</h2>
+                                        ${p.area || p.location ? `<p style="font-size: 0.85rem; color: var(--color-accent); letter-spacing: 0.1em; margin-bottom: 0.5rem; text-transform: uppercase;">
+                                            ${p.area ? 'Area: ' + p.area : ''}
+                                            ${p.area && p.location ? ' | ' : ''}
+                                            ${p.location ? 'Location: ' + p.location : ''}
+                                        </p>` : ''}
                                         <p class="project-card-desc">${p.description}</p>
                                     </div>
                                 </div>

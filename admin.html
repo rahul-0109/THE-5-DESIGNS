@@ -372,6 +372,7 @@
             fetchLeads();
             fetchProjects();
             fetchSettings();
+            loadManageDiaries();
             renderSheetPreview('boq'); // Load sheets preview
         }
 
@@ -666,11 +667,11 @@
                 if (response.ok && resData.success) {
                     const tbody = document.getElementById('manage-diaries-body');
                     tbody.innerHTML = '';
-                    if (resData.data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-gray-400">No diaries found.</td></tr>';
+                    window.diaryDataCache = resData.data.filter(d => d.type === 'article');
+                    if (window.diaryDataCache.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-gray-400">No blogs found.</td></tr>';
                         return;
                     }
-                    window.diaryDataCache = resData.data.filter(d => d.type === 'article');
                     window.diaryDataCache.forEach(d => {
                         const date = new Date(d.created_at || Date.now()).toLocaleDateString('en-GB');
                         const author = d.author || "Rahul Sharma, Founder - 5";

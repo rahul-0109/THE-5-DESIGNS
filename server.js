@@ -87,11 +87,112 @@ function processLocalImagePath(imagePath) {
     return cleanPath;
 }
 
+function injectSEO(htmlStr, pathname, searchParams, db) {
+    let title = 'The 5 Designs | Luxury Interior Design Studio';
+    let description = 'The 5 Designs is a premium luxury interior design studio offering bespoke architectural and design solutions.';
+    let jsonLd = [];
+
+    // Base Organization Schema
+    jsonLd.push({
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        'name': 'The 5 Designs',
+        'image': 'https://the5designs.in/images/upload_1782804127757751.webp',
+        'telephone': db.config?.whatsapp_number || '+919492010909',
+        'url': 'https://the5designs.in/'
+    });
+
+    if (pathname === '/' || pathname === '/index.html') {
+        if (db.faqs && db.faqs.length > 0) {
+            let faqEntities = db.faqs.filter(f => f.q && f.a).map(f => ({
+                '@type': 'Question',
+                'name': f.q,
+                'acceptedAnswer': {
+                    '@type': 'Answer',
+                    'text': f.a
+                }
+            }));
+            if (faqEntities.length > 0) {
+                jsonLd.push({
+                    '@context': 'https://schema.org',
+                    '@type': 'FAQPage',
+                    'mainEntity': faqEntities
+                });
+            }
+        }
+    } else if (pathname === '/project-detail.html') {
+        const pid = searchParams.get('id');
+        const project = db.projects?.find(p => p.id === pid);
+        if (project) {
+            title = project.title + ' | The 5 Designs Portfolio';
+            description = project.description || description;
+            jsonLd.push({
+                '@context': 'https://schema.org',
+                '@type': 'CreativeWork',
+                'name': project.title,
+                'description': project.description,
+                'image': project.image_url,
+                'author': { '@type': 'Organization', 'name': 'The 5 Designs' }
+            });
+        }
+    } else if (pathname === '/blog-detail.html') {
+        const bid = searchParams.get('id');
+        const blog = db.diaries?.find(b => b.id === bid);
+        if (blog) {
+            title = blog.title + ' | The 5 Designs';
+            description = blog.content ? blog.content.substring(0, 150).replace(/<[^>]+>/g, '') + '...' : description;
+            jsonLd.push({
+                '@context': 'https://schema.org',
+                '@type': 'BlogPosting',
+                'headline': blog.title,
+                'image': blog.media_url,
+                'datePublished': blog.created_at || new Date().toISOString(),
+                'author': { '@type': 'Person', 'name': blog.author || 'Rahul Sharma' }
+            });
+        }
+    }
+
+    let seoBlock = `
+    <title>${title}</title>
+    <meta name="description" content="${description}">
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:type" content="website">
+    <script type="application/ld+json">
+    ${JSON.stringify(jsonLd)}
+    </script>
+    `;
+
+    // Try to replace </title> if it exists, otherwise just inject before </head>
+    if (htmlStr.includes('</title>')) {
+        htmlStr = htmlStr.replace(/<title>.*?<\/title>/gi, '');
+    }
+    return htmlStr.replace('</head>', seoBlock + '</head>');
+}
+
 // Server router
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const pathname = url.pathname;
     const method = req.method;
+
+    // --- SITEMAP ROUTE ---
+    if (pathname === '/sitemap.xml' && method === 'GET') {
+        const db = readDB();
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+        xml += `<url><loc>https://the5designs.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>\n`;
+        db.projects?.forEach(p => {
+            xml += `<url><loc>https://the5designs.in/project-detail.html?id=${p.id}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>\n`;
+        });
+        db.diaries?.forEach(d => {
+            if(d.status === 'published') {
+                xml += `<url><loc>https://the5designs.in/blog-detail.html?id=${d.id}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+            }
+        });
+        xml += `</urlset>`;
+        res.writeHead(200, { 'Content-Type': 'application/xml' });
+        return res.end(xml);
+    }
 
     // --- API ROUTES ---
 
@@ -397,8 +498,13 @@ const server = http.createServer(async (req, res) => {
                 res.end('Server error: ' + error.code);
             }
         } else {
+            let resContent = content;
+            if (extname === '.html') {
+                const dbData = readDB();
+                resContent = injectSEO(content.toString('utf8'), pathname, url.searchParams, dbData);
+            }
             res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content, 'utf-8');
+            res.end(resContent, 'utf-8');
         }
     });
 });

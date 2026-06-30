@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://the5designs.in/sitemap.xml

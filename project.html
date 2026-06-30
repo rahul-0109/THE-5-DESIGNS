@@ -964,16 +964,18 @@
                     const container = document.getElementById('projects-grid-container');
                     if (container) {
                         container.innerHTML = projects.map(p => `
-                            <div class="project-card">
-                                <div class="img-wrapper">
-                                    <img src="${p.image_url}" alt="${p.title}">
+                            <a href="project-detail.html?id=${p.id}" style="text-decoration: none; color: inherit; display: block;">
+                                <div class="project-card">
+                                    <div class="img-wrapper">
+                                        <img src="${p.image_url}" alt="${p.title}">
+                                    </div>
+                                    <div style="margin-top: 1rem;">
+                                        <p class="project-card-meta">${p.meta}</p>
+                                        <h2 class="project-card-title">${p.title}</h2>
+                                        <p class="project-card-desc">${p.description}</p>
+                                    </div>
                                 </div>
-                                <div style="margin-top: 1rem;">
-                                    <p class="project-card-meta">${p.meta}</p>
-                                    <h2 class="project-card-title">${p.title}</h2>
-                                    <p class="project-card-desc">${p.description}</p>
-                                </div>
-                            </div>
+                            </a>
                         `).join('');
                         
                         // Re-initialize animations for the newly added cards

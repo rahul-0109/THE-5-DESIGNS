@@ -207,6 +207,7 @@ const server = http.createServer(async (req, res) => {
                 meta: body.meta || "Featured Project",
                 description: body.description || "",
                 image_url: body.image_url || "",
+                spaces: body.spaces || [],
                 created_at: new Date().toISOString()
             };
             db.projects.push(newProject);

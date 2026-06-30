@@ -63,6 +63,30 @@ function checkAuth(req) {
     return token === SESSION_TOKEN;
 }
 
+function processLocalImagePath(imagePath) {
+    if (!imagePath) return "";
+    let cleanPath = String(imagePath).trim();
+    if (cleanPath.startsWith('"') && cleanPath.endsWith('"')) cleanPath = cleanPath.slice(1, -1);
+    if (cleanPath.startsWith("'") && cleanPath.endsWith("'")) cleanPath = cleanPath.slice(1, -1);
+    
+    if (cleanPath.match(/^[a-zA-Z]:\\/) || cleanPath.match(/^[a-zA-Z]:\//) || cleanPath.startsWith('/Users/') || cleanPath.startsWith('/home/')) {
+        try {
+            if (fs.existsSync(cleanPath)) {
+                const ext = path.extname(cleanPath) || '.jpg';
+                const newFileName = 'upload_' + Date.now() + Math.floor(Math.random()*1000) + ext;
+                const destDir = path.join(__dirname, 'images');
+                if (!fs.existsSync(destDir)) fs.mkdirSync(destDir);
+                const destPath = path.join(destDir, newFileName);
+                fs.copyFileSync(cleanPath, destPath);
+                return 'images/' + newFileName;
+            }
+        } catch (e) {
+            console.error("Failed to copy local image:", e);
+        }
+    }
+    return cleanPath;
+}
+
 // Server router
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -206,8 +230,8 @@ const server = http.createServer(async (req, res) => {
                 title: body.title,
                 meta: body.meta || "Featured Project",
                 description: body.description || "",
-                image_url: body.image_url || "",
-                spaces: body.spaces || [],
+                image_url: processLocalImagePath(body.image_url || ""),
+                spaces: Array.isArray(body.spaces) ? body.spaces.map(s => ({...s, image_url: processLocalImagePath(s.image_url)})) : [],
                 created_at: new Date().toISOString()
             };
             db.projects.push(newProject);
@@ -222,6 +246,10 @@ const server = http.createServer(async (req, res) => {
             const db = readDB();
             const index = (db.projects || []).findIndex(p => p.id === body.id);
             if (index !== -1) {
+                if (body.image_url) body.image_url = processLocalImagePath(body.image_url);
+                if (Array.isArray(body.spaces)) {
+                    body.spaces = body.spaces.map(s => ({...s, image_url: processLocalImagePath(s.image_url)}));
+                }
                 db.projects[index] = { ...db.projects[index], ...body };
                 if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Updated successfully" });
                 else return sendJSON(res, 500, { success: false, message: "Database write failure" });
@@ -267,7 +295,7 @@ const server = http.createServer(async (req, res) => {
                 id: String(Date.now()),
                 type: body.type, // 'article'
                 title: body.title,
-                media_url: body.media_url || "",
+                media_url: processLocalImagePath(body.media_url || ""),
                 content: body.content || "",
                 author: body.author || "Rahul Sharma, Founder - 5",
                 keywords: body.keywords || "",
@@ -289,6 +317,7 @@ const server = http.createServer(async (req, res) => {
             const db = readDB();
             const index = db.diaries.findIndex(d => d.id === body.id);
             if (index !== -1) {
+                if (body.media_url) body.media_url = processLocalImagePath(body.media_url);
                 db.diaries[index] = { ...db.diaries[index], ...body };
                 if (writeDB(db)) return sendJSON(res, 200, { success: true, message: "Updated successfully" });
                 else return sendJSON(res, 500, { success: false, message: "Database write failure" });

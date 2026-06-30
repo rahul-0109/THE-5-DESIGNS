@@ -346,12 +346,21 @@
 
         async function fetchProjectData(id) {
             try {
+                let waLink = '';
+                try {
+                    const sRes = await fetch('/api/settings');
+                    const sData = await sRes.json();
+                    if (sData.success && sData.data.whatsapp_number) {
+                        waLink = 'https://wa.me/' + sData.data.whatsapp_number.replace(/[^0-9]/g, '');
+                    }
+                } catch(e) {}
+
                 const response = await fetch('/api/projects');
                 const resData = await response.json();
                 if (response.ok && resData.success) {
                     const project = resData.data.find(p => p.id === id);
                     if (project) {
-                        renderProject(project);
+                        renderProject(project, waLink);
                     } else {
                         document.getElementById('portfolio-container').innerHTML = `<h2 style="padding: 20%; text-align: center;">Project not found.</h2>`;
                     }
@@ -361,7 +370,7 @@
             }
         }
 
-        function renderProject(p) {
+        function renderProject(p, waLink) {
             let html = `
                 <section class="project-hero">
                     <img src="${p.image_url}" class="hero-bg" alt="${p.title}">
@@ -403,6 +412,15 @@
                             <p style="color: var(--color-text-muted); font-style: italic;">Detailed portfolio coming soon.</p>
                         </div>
                     </section>
+                `;
+            }
+
+            if (waLink) {
+                html += `
+                <section style="background-color: var(--color-bg); padding: 5rem 10%; text-align: center;">
+                    <p style="font-family: var(--font-display); font-size: 2rem; font-style: italic; margin-bottom: 2rem; color: var(--color-obsidian);">Interested in creating your own luxury space?</p>
+                    <a href="${waLink}" target="_blank" style="display: inline-block; background: var(--color-obsidian); color: #F5F5F0; padding: 1.2rem 2.5rem; text-decoration: none; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem; transition: opacity 0.3s; cursor: pointer;">Message us on WhatsApp</a>
+                </section>
                 `;
             }
 

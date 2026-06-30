@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | The 5 Designs</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #F5F5F0;
+            --color-obsidian: #1A1A1A;
+            --color-accent: #C5A059;
+            --color-text: #1A1A1A;
+            --color-text-muted: rgba(26, 26, 26, 0.6);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+            --ease-premium: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-print-color-adjust: exact;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.6rem 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(245, 245, 240, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.5s var(--ease-premium);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-style: italic;
+            transition: all 0.3s;
+            line-height: 1;
+        }
+        .nav-logo:hover { transform: scale(1.1); filter: brightness(1.2); }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: var(--color-accent) !important;
+        }
+
+        .blog-header {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            margin-top: 80px; /* Offset for nav */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+        }
+
+        .blog-meta {
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-title {
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            line-height: 1.1;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            max-width: 900px;
+        }
+
+        .blog-cover {
+            width: 100%;
+            height: 70vh;
+            object-fit: cover;
+            margin-bottom: 4rem;
+        }
+
+        .blog-content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 5% 10% 5%;
+        }
+
+        /* Rich Text Editor Styles */
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(26, 26, 26, 0.8);
+        }
+        .blog-content p {
+            margin-bottom: 1.5rem;
+        }
+        .blog-content h1, .blog-content h2, .blog-content h3 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            color: var(--color-text);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        .blog-content h1 { font-size: 2.5rem; }
+        .blog-content h2 { font-size: 2rem; }
+        .blog-content h3 { font-size: 1.75rem; }
+        .blog-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .blog-content ul, .blog-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        .blog-content li {
+            margin-bottom: 0.5rem;
+        }
+        .blog-content a {
+            color: var(--color-accent);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .blog-title { font-size: 3rem; }
+            .blog-header { height: 40vh; }
+            .blog-cover { height: 40vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">5</a>
+        
+        <div class="nav-center">
+            <a href="/#slide-5" class="nav-link">Projects</a>
+            <a href="/diaries.html" class="nav-link" style="color: var(--color-accent);">Diaries</a>
+        </div>
+        
+        <div style="width: 32px;"></div> <!-- Spacer -->
+    </nav>
+
+    <div id="blog-container">
+        <!-- Content injected here via JS -->
+    </div>
+
+    <script>
+        async function loadBlog() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            
+            if (!id) {
+                document.getElementById('blog-container').innerHTML = '<p style="text-align:center; padding: 20%;">Blog not found.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/diaries');
+                const resData = await response.json();
+                
+                if (response.ok && resData.success && resData.data) {
+                    const blog = resData.data.find(b => b.id === id);
+                    if (!blog) {
+                        document.getElementById('blog-container').innerHTML = '<p style="text-align:center; padding: 20%;">Blog not found.</p>';
+                        return;
+                    }
+
+                    document.title = blog.title + " | The 5 Designs";
+                    const date = new Date(blog.created_at || Date.now()).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const author = blog.author || "Rahul Sharma, Founder - 5";
+                    
+                    let coverHtml = '';
+                    if (blog.media_url) {
+                        coverHtml = `<img src="${blog.media_url}" class="blog-cover" alt="Cover Image">`;
+                    }
+
+                    document.getElementById('blog-container').innerHTML = `
+                        <div class="blog-header">
+                            <div class="blog-meta">${author} &nbsp;&nbsp;|&nbsp;&nbsp; ${date}</div>
+                            <h1 class="blog-title">${blog.title}</h1>
+                        </div>
+                        ${coverHtml}
+                        <div class="blog-content-container">
+                            <div class="blog-content">${blog.content}</div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Failed to load blog", err);
+                document.getElementById('blog-container').innerHTML = '<p style="text-align:center; padding: 20%;">Error loading blog.</p>';
+            }
+        }
+
+        window.onload = loadBlog;
+    </script>
+</body>
+</html>

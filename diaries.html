@@ -229,6 +229,7 @@
                         const date = new Date(item.created_at || Date.now()).toLocaleDateString('en-GB');
                         const author = item.author || "Rahul Sharma, Founder - 5";
                         
+                        const strippedContent = item.content ? item.content.replace(/<[^>]*>?/gm, '') : '';
                         card.innerHTML = `
                             <img src="${item.media_url}" class="diary-img" alt="${item.title}">
                             <div class="diary-overlay">
@@ -237,8 +238,8 @@
                                     <span>${date}</span>
                                 </p>
                                 <h3 class="diary-title">${item.title}</h3>
-                                <div class="diary-content">${item.content}</div>
-                                <a href="#" class="diary-btn">Read Diary</a>
+                                <div class="diary-content">${strippedContent}</div>
+                                <a href="/blog-detail.html?id=${item.id}" class="diary-btn">Read Diary</a>
                             </div>
                         `;
                         blogsContainer.appendChild(card);

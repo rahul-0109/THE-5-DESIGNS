@@ -190,12 +190,15 @@
         }
         @media (max-width: 768px) {
             .diaries-grid {
-                display: flex !important;
-                flex-direction: row;
+                display: grid !important;
+                grid-auto-flow: column;
+                grid-auto-columns: 85vw;
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
-                gap: 2rem;
+                gap: 1.5rem;
                 padding-bottom: 2rem;
+                padding-left: 5vw;
+                padding-right: 5vw;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
             }
@@ -203,13 +206,16 @@
                 display: none;
             }
             .diary-card {
-                flex: 0 0 85%;
+                width: 100% !important;
                 scroll-snap-align: center;
             }
             nav { padding: 1rem 1.5rem; flex-wrap: wrap; justify-content: center; gap: 1rem; }
             .nav-center { position: relative !important; left: 0 !important; transform: none !important; width: 100%; justify-content: center; margin-top: 0.5rem; }
             .nav-socials { display: none; }
             .hero-title { font-size: 3.5rem !important; }
+            .header-section {
+                padding-top: 140px !important;
+            }
         }
     </style>
 </head>

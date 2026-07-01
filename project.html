@@ -802,23 +802,23 @@
             section { padding: 15% 5% !important; }
             h1 { font-size: 3rem !important; }
             .portfolio-grid {
-                display: flex !important;
-                flex-direction: row;
+                display: grid !important;
+                grid-auto-flow: column;
+                grid-auto-columns: 85vw;
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
                 gap: 1.5rem;
                 padding-bottom: 2rem;
+                padding-left: 5vw;
+                padding-right: 5vw;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
-                padding-left: 5%;
-                padding-right: 5%;
             }
             .portfolio-grid::-webkit-scrollbar {
                 display: none;
             }
             .project-card {
-                flex: 0 0 85%;
-                width: 85% !important;
+                width: 100% !important;
                 margin: 0 !important;
                 scroll-snap-align: center;
             }

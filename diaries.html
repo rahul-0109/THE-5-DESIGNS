@@ -190,8 +190,9 @@
         }
         @media (max-width: 768px) {
             .diaries-grid { grid-template-columns: 1fr; }
-            .nav-center { display: none; }
-            nav { padding: 1rem 1.5rem; }
+            nav { padding: 1rem 1.5rem; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+            .nav-center { position: relative !important; left: 0 !important; transform: none !important; width: 100%; justify-content: center; margin-top: 0.5rem; }
+            .nav-socials { display: none; }
             .hero-title { font-size: 3.5rem !important; }
         }
     </style>

@@ -1006,7 +1006,7 @@
                             <a href="project-detail.html?id=${p.id}" style="text-decoration: none; color: inherit; display: block;">
                                 <div class="project-card">
                                     <div class="img-wrapper">
-                                        <img src="${p.image_url}" alt="${p.title}">
+                                        <img src="${encodeURI(p.image_url)}" alt="${p.title}">
                                     </div>
                                     <div style="margin-top: 1rem;">
                                         <p class="project-card-meta">${p.meta}</p>

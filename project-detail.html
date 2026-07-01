@@ -391,7 +391,7 @@
         function renderProject(p, waLink) {
             let html = `
                 <section class="project-hero">
-                    <img src="${p.image_url}" class="hero-bg" alt="${p.title}">
+                    <img src="${encodeURI(p.image_url)}" class="hero-bg" alt="${p.title}">
                     <div class="hero-overlay"></div>
                     
                     <div class="hero-content">
@@ -417,7 +417,7 @@
                         <section class="space-section ${darkClass}">
                             <div class="space-layout ${reverseClass}">
                                 <div class="space-image-container">
-                                    <img src="${space.image_url}" alt="${space.name}">
+                                    <img src="${encodeURI(space.image_url)}" alt="${space.name}">
                                 </div>
                                 <div class="space-text">
                                     <p class="space-meta">Space 0${index + 1}</p>

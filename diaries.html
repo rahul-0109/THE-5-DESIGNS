@@ -270,7 +270,7 @@
                         const strippedContent = item.content ? item.content.replace(/<[^>]*>?/gm, '') : '';
                         card.innerHTML = `
                             <div class="diary-img-container">
-                                <img src="${item.media_url}" class="diary-img" alt="${item.title}">
+                                <img src="${encodeURI(item.media_url)}" class="diary-img" alt="${item.title}">
                             </div>
                             <div class="diary-content-container">
                                 <p class="diary-type" style="display:flex; justify-content:space-between; width:100%;">

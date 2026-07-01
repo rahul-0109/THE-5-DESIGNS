@@ -226,7 +226,7 @@
                     
                     let coverHtml = '';
                     if (blog.media_url) {
-                        coverHtml = `<img src="${blog.media_url}" class="blog-cover" alt="Cover Image">`;
+                        coverHtml = `<img src="${encodeURI(blog.media_url)}" class="blog-cover" alt="Cover Image">`;
                     }
 
                     let waHtml = '';

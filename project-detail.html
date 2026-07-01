@@ -272,6 +272,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @media (pointer: coarse) {
+            .cursor-dot, .cursor-halo, .cursor-particle {
+                display: none !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-center { display: none; }
+            nav { padding: 1rem 1.5rem; }
+            .hero-title { font-size: 3.5rem !important; }
+            .detail-meta-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .content-grid { grid-template-columns: 1fr; }
+            .content-grid.reverse { grid-template-columns: 1fr; }
+            .full-image-section { height: 50vh; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .project-hero { height: 70vh; }
+            section { padding: 15% 5% !important; }
+        }
     </style>
 </head>
 <body>

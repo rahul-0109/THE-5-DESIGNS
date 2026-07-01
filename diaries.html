@@ -180,11 +180,19 @@
             border-color: var(--color-accent);
         }
 
+        @media (pointer: coarse) {
+            .cursor-dot, .cursor-halo, .cursor-particle {
+                display: none !important;
+            }
+        }
         @media (max-width: 1024px) {
             .diaries-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
             .diaries-grid { grid-template-columns: 1fr; }
+            .nav-center { display: none; }
+            nav { padding: 1rem 1.5rem; }
+            .hero-title { font-size: 3.5rem !important; }
         }
     </style>
 </head>

@@ -167,10 +167,17 @@
             text-decoration: underline;
         }
 
+        @media (pointer: coarse) {
+            .cursor-dot, .cursor-halo, .cursor-particle {
+                display: none !important;
+            }
+        }
         @media (max-width: 768px) {
-            .blog-title { font-size: 3rem; }
+            .blog-title { font-size: 3rem !important; }
             .blog-header { height: 40vh; }
             .blog-cover { height: 40vh; }
+            .nav-center { display: none; }
+            nav { padding: 1rem 1.5rem; }
         }
     </style>
 </head>

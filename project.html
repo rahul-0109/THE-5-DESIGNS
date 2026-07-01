@@ -42,14 +42,13 @@
         }
 
         /* --- SLIDE STRUCTURE --- */
-        section { width: 100%; min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 5% 10%;
-            overflow: hidden;
+        section { width: 100%; min-height: 100vh; height: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; padding: 5% 10%; overflow: hidden; }
+
+        @media (max-width: 768px) {
+            section { padding: 10% 5%; }
+            .content-layout, .founder-layout { grid-template-columns: 1fr !important; flex-direction: column !important; gap: 2rem !important; }
+            .services-grid { grid-template-columns: 1fr 1fr !important; }
+            #slide-1 h1 { font-size: 4rem !important; }
         }
 
         @media print {
@@ -788,7 +787,27 @@
             color: var(--color-text-muted);
             color: rgba(245, 245, 240, 0.7);
         }
-
+        @media (pointer: coarse) {
+            .cursor-dot, .cursor-halo, .cursor-particle {
+                display: none !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .project-card-title {
+                font-size: 3.5rem !important;
+            }
+            .nav-center { display: none; }
+            nav { padding: 1rem 1.5rem; }
+            section { padding: 15% 5% !important; }
+            h1 { font-size: 4rem !important; }
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .project-card-desc {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>

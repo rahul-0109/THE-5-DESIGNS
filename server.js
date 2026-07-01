@@ -503,9 +503,14 @@ const server = http.createServer(async (req, res) => {
             if (extname === '.html') {
                 const dbData = readDB();
                 resContent = injectSEO(content.toString('utf8'), pathname, url.searchParams, dbData);
+                // Convert back to buffer to get accurate byte length
+                resContent = Buffer.from(resContent, 'utf8');
             }
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(resContent, 'utf-8');
+            res.writeHead(200, { 
+                'Content-Type': contentType,
+                'Content-Length': resContent.length
+            });
+            res.end(resContent);
         }
     });
 });

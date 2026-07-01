@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const MIME_TYPES = {
     '.html': 'text/html',

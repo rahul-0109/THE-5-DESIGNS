@@ -802,8 +802,21 @@
             section { padding: 15% 5% !important; }
             h1 { font-size: 4rem !important; }
             .portfolio-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
+                display: flex !important;
+                flex-direction: row;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 2rem;
+                padding-bottom: 2rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .portfolio-grid::-webkit-scrollbar {
+                display: none;
+            }
+            .project-card {
+                flex: 0 0 85%;
+                scroll-snap-align: center;
             }
             .project-card-desc {
                 font-size: 1rem;

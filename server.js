@@ -478,8 +478,9 @@ const server = http.createServer(async (req, res) => {
     }
 
     // --- STATIC FILES SERVING ---
-    let filePath = '.' + pathname;
-    if (pathname === '/') {
+    const decodedPathname = decodeURIComponent(pathname);
+    let filePath = '.' + decodedPathname;
+    if (decodedPathname === '/') {
         filePath = './index.html';
     } else if (pathname === '/admin' || pathname === '/admin.html') {
         filePath = './admin.html';

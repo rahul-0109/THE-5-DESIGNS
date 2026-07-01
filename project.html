@@ -801,31 +801,18 @@
             .nav-socials { display: none; }
             section { padding: 15% 5% !important; }
             h1 { font-size: 3rem !important; }
-            .portfolio-grid {
-                display: grid !important;
-                grid-template-columns: none !important;
-                grid-template-rows: 1fr !important;
-                grid-auto-flow: column;
-                grid-auto-columns: 85vw;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                gap: 1.5rem;
-                padding-bottom: 2rem;
-                padding-left: 5vw;
-                padding-right: 5vw;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            .portfolio-grid::-webkit-scrollbar {
-                display: none;
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding: 1rem 5vw;
             }
             .project-card {
                 width: 100% !important;
                 margin: 0 !important;
                 scroll-snap-align: center;
             }
-            .project-card-desc {
-                font-size: 1rem;
+            .project-card-meta, .project-card-desc {
+                display: none !important;
             }
         }
     </style>

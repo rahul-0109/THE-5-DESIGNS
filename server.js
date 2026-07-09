@@ -171,8 +171,8 @@ function injectSEO(htmlStr, pathname, searchParams, db) {
     htmlStr = htmlStr.replace('</head>', seoBlock + '</head>');
     
     // Inject dynamic links from DB
-    if (db && db.instagram_url) {
-        htmlStr = htmlStr.replace(/href="#"(\s+id="instagram_url"|\s+aria-label="Instagram")/g, `href="${db.instagram_url}" target="_blank"$1`);
+    if (db && db.config && db.config.instagram_url) {
+        htmlStr = htmlStr.replace(/href="#"(\s+id="instagram_url"|\s+aria-label="Instagram")/g, `href="${db.config.instagram_url}" target="_blank"$1`);
     }
 
     return htmlStr;

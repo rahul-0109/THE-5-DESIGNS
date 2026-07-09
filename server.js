@@ -167,7 +167,15 @@ function injectSEO(htmlStr, pathname, searchParams, db) {
     if (htmlStr.includes('</title>')) {
         htmlStr = htmlStr.replace(/<title>.*?<\/title>/gi, '');
     }
-    return htmlStr.replace('</head>', seoBlock + '</head>');
+    
+    htmlStr = htmlStr.replace('</head>', seoBlock + '</head>');
+    
+    // Inject dynamic links from DB
+    if (db && db.instagram_url) {
+        htmlStr = htmlStr.replace(/href="#"(\s+id="instagram_url"|\s+aria-label="Instagram")/g, `href="${db.instagram_url}" target="_blank"$1`);
+    }
+
+    return htmlStr;
 }
 
 // Server router

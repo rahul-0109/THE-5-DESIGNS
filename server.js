@@ -478,7 +478,14 @@ const server = http.createServer(async (req, res) => {
     }
 
     // --- STATIC FILES SERVING ---
-    const decodedPathname = decodeURIComponent(pathname);
+    let decodedPathname;
+    try {
+        decodedPathname = decodeURIComponent(pathname);
+    } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Bad Request: Malformed URI');
+        return;
+    }
     let filePath = '.' + decodedPathname;
     if (decodedPathname === '/') {
         filePath = './index.html';
